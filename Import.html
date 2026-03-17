@@ -25,6 +25,7 @@ select,input,textarea{font-family:inherit}
 <div id="root"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 var _memStore={};
 var _useLocal=false;
@@ -113,6 +114,31 @@ const ACODES = {
   manager: "0000",
   admin: "9999"
 };
+const DEFAULT_STAFF = [{
+  id: "S001",
+  fn: "Allie",
+  ln: "Spegel",
+  pin: "9999",
+  role: "admin"
+}, {
+  id: "S002",
+  fn: "Mary",
+  ln: "Patrico",
+  pin: "0000",
+  role: "manager"
+}, {
+  id: "S003",
+  fn: "Priyanka",
+  ln: "Malani",
+  pin: "1111",
+  role: "manager"
+}, {
+  id: "S004",
+  fn: "Aaron",
+  ln: "Opalewski",
+  pin: "2222",
+  role: "admin"
+}];
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const PTYPES = [{
   k: "in",
@@ -161,27 +187,6 @@ const SHIFTS = [{
   start: "22:00",
   end: "06:30"
 }];
-const PTO_TYPES = [{
-  k: "vacation",
-  l: "Vacation",
-  c: C.blue,
-  icon: "🏖"
-}, {
-  k: "sick",
-  l: "Sick",
-  c: C.orange,
-  icon: "🤒"
-}, {
-  k: "personal",
-  l: "Personal",
-  c: C.purple,
-  icon: "🏠"
-}, {
-  k: "unpaid",
-  l: "Unpaid",
-  c: C.t3,
-  icon: "⏸"
-}];
 const SEED = [{
   id: "E001",
   badge: "0001",
@@ -196,12 +201,7 @@ const SEED = [{
   shiftEnd: "14:30",
   workDays: [1, 2, 3, 4, 5],
   rate: 16.50,
-  st: "active",
-  ptoBalances: {
-    vacation: 40,
-    sick: 24,
-    personal: 16
-  }
+  st: "active"
 }, {
   id: "E002",
   badge: "0002",
@@ -216,12 +216,7 @@ const SEED = [{
   shiftEnd: "14:30",
   workDays: [1, 2, 3, 4, 5],
   rate: 17.00,
-  st: "active",
-  ptoBalances: {
-    vacation: 32,
-    sick: 20,
-    personal: 16
-  }
+  st: "active"
 }, {
   id: "E003",
   badge: "0003",
@@ -236,12 +231,7 @@ const SEED = [{
   shiftEnd: "14:30",
   workDays: [1, 2, 3, 4, 5],
   rate: 16.50,
-  st: "active",
-  ptoBalances: {
-    vacation: 40,
-    sick: 24,
-    personal: 8
-  }
+  st: "active"
 }, {
   id: "E004",
   badge: "0004",
@@ -256,12 +246,7 @@ const SEED = [{
   shiftEnd: "15:30",
   workDays: [1, 2, 3, 4, 5],
   rate: 16.00,
-  st: "active",
-  ptoBalances: {
-    vacation: 24,
-    sick: 16,
-    personal: 16
-  }
+  st: "active"
 }, {
   id: "E005",
   badge: "0005",
@@ -276,12 +261,7 @@ const SEED = [{
   shiftEnd: "14:00",
   workDays: [1, 2, 3, 4, 5],
   rate: 19.50,
-  st: "active",
-  ptoBalances: {
-    vacation: 48,
-    sick: 24,
-    personal: 16
-  }
+  st: "active"
 }, {
   id: "E006",
   badge: "0006",
@@ -296,12 +276,7 @@ const SEED = [{
   shiftEnd: "14:30",
   workDays: [1, 2, 3, 4, 5],
   rate: 17.00,
-  st: "active",
-  ptoBalances: {
-    vacation: 36,
-    sick: 24,
-    personal: 12
-  }
+  st: "active"
 }, {
   id: "E007",
   badge: "0007",
@@ -316,12 +291,7 @@ const SEED = [{
   shiftEnd: "15:30",
   workDays: [1, 2, 3, 4, 5],
   rate: 16.00,
-  st: "terminated",
-  ptoBalances: {
-    vacation: 0,
-    sick: 0,
-    personal: 0
-  }
+  st: "terminated"
 }, {
   id: "E008",
   badge: "0008",
@@ -336,12 +306,7 @@ const SEED = [{
   shiftEnd: "14:30",
   workDays: [1, 2, 3, 4, 5],
   rate: 16.50,
-  st: "active",
-  ptoBalances: {
-    vacation: 40,
-    sick: 24,
-    personal: 16
-  }
+  st: "active"
 }, {
   id: "E009",
   badge: "0009",
@@ -356,12 +321,7 @@ const SEED = [{
   shiftEnd: "15:30",
   workDays: [1, 2, 3, 4, 5],
   rate: 16.00,
-  st: "active",
-  ptoBalances: {
-    vacation: 28,
-    sick: 20,
-    personal: 16
-  }
+  st: "active"
 }, {
   id: "E010",
   badge: "0010",
@@ -376,12 +336,7 @@ const SEED = [{
   shiftEnd: "14:30",
   workDays: [1, 2, 3, 4, 5],
   rate: 16.50,
-  st: "active",
-  ptoBalances: {
-    vacation: 40,
-    sick: 24,
-    personal: 16
-  }
+  st: "active"
 }];
 const DEFAULT_POLICY = {
   graceMins: 7,
@@ -393,34 +348,31 @@ const DEFAULT_POLICY = {
   maxPts: 8,
   rollingDays: 90
 };
-const DEFAULT_PTO_POLICY = {
-  vacation: {
-    accrualRate: 3.33,
-    accrualPeriod: "biweekly",
-    maxBalance: 80,
-    carryoverMax: 40
-  },
-  sick: {
-    accrualRate: 1.85,
-    accrualPeriod: "biweekly",
-    maxBalance: 48,
-    carryoverMax: 48
-  },
-  personal: {
-    accrualRate: 1.33,
-    accrualPeriod: "biweekly",
-    maxBalance: 24,
-    carryoverMax: 0
-  }
-};
 const DEFAULT_GEO = {
   allowedIPs: [],
   enforceIP: false,
   siteLat: 42.2526,
   siteLng: -83.2119,
   geoRadius: 500,
-  enforceGeo: false
+  enforceGeo: false,
+  siteAddress: "DFM Marshall Plant, Marshall, MI"
 };
+
+/* ═══ SUPABASE CONFIG — Set your project credentials here ═══ */
+var SUPABASE_URL = "https://rdyzvohphrmkkowdsoam.supabase.co";
+var SUPABASE_KEY = "sb_publishable_F1SY19w16Y4Frjd3C9RSGQ_6v4DmiO5";
+var _sb = null;
+function getSb() {
+  if (_sb) return _sb;
+  if (!SUPABASE_URL || !SUPABASE_KEY || typeof window.supabase === "undefined") return null;
+  _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  return _sb;
+}
+var useSupa = function () {
+  return !!getSb();
+};
+
+/* ═══ STORAGE LAYER — Supabase when configured, localStorage fallback ═══ */
 async function sGet(k) {
   try {
     var r = safeStorage.getItem(k);
@@ -436,6 +388,196 @@ async function sSet(k, v) {
     console.error(e);
   }
 }
+
+/* Supabase table helpers */
+async function sbLoadEmployees() {
+  var sb = getSb();
+  if (!sb) return null;
+  var r = await sb.from("tk_employees").select("*").order("id");
+  if (r.error) {
+    console.error("sb emp:", r.error);
+    return null;
+  }
+  return r.data.map(function (e) {
+    return {
+      id: e.id,
+      badge: e.badge,
+      fn: e.fn,
+      ln: e.ln,
+      pin: e.pin,
+      dept: e.dept,
+      role: e.role,
+      site: e.site,
+      shift: e.shift,
+      shiftStart: e.shift_start,
+      shiftEnd: e.shift_end,
+      workDays: e.work_days,
+      rate: parseFloat(e.rate),
+      st: e.status
+    };
+  });
+}
+async function sbLoadPunches() {
+  var sb = getSb();
+  if (!sb) return null;
+  var r = await sb.from("tk_punches").select("*").order("time", {
+    ascending: false
+  }).limit(5000);
+  if (r.error) return null;
+  return r.data.map(function (p) {
+    return {
+      id: p.id,
+      eid: p.eid,
+      type: p.type,
+      time: p.time,
+      dev: p.dev,
+      ip: p.ip,
+      lat: p.lat ? parseFloat(p.lat) : null,
+      lng: p.lng ? parseFloat(p.lng) : null,
+      dist: p.dist
+    };
+  });
+}
+async function sbLoadPointEvents() {
+  var sb = getSb();
+  if (!sb) return null;
+  var r = await sb.from("tk_point_events").select("*").order("date", {
+    ascending: false
+  });
+  if (r.error) return null;
+  return r.data.map(function (e) {
+    return {
+      id: e.id,
+      eid: e.eid,
+      type: e.type,
+      pts: parseFloat(e.pts),
+      date: e.date
+    };
+  });
+}
+async function sbLoadRequests() {
+  var sb = getSb();
+  if (!sb) return null;
+  var r = await sb.from("tk_requests").select("*").order("created_at", {
+    ascending: false
+  });
+  if (r.error) return null;
+  return r.data.map(function (r2) {
+    return {
+      id: r2.id,
+      eid: r2.eid,
+      type: r2.type,
+      time: r2.time,
+      note: r2.note,
+      status: r2.status,
+      ip: r2.ip
+    };
+  });
+}
+async function sbLoadStaff() {
+  var sb = getSb();
+  if (!sb) return null;
+  var r = await sb.from("tk_staff").select("*").order("id");
+  if (r.error) return null;
+  return r.data.map(function (s) {
+    return {
+      id: s.id,
+      fn: s.fn,
+      ln: s.ln,
+      pin: s.pin,
+      role: s.role
+    };
+  });
+}
+async function sbLoadConfig(key) {
+  var sb = getSb();
+  if (!sb) return null;
+  var r = await sb.from("tk_config").select("value").eq("key", key).single();
+  if (r.error) return null;
+  return r.data.value;
+}
+async function sbSavePunch(p) {
+  var sb = getSb();
+  if (!sb) return;
+  await sb.from("tk_punches").upsert({
+    id: p.id,
+    eid: p.eid,
+    type: p.type,
+    time: p.time,
+    dev: p.dev,
+    ip: p.ip,
+    lat: p.lat,
+    lng: p.lng,
+    dist: p.dist
+  });
+}
+async function sbSavePointEvent(ev) {
+  var sb = getSb();
+  if (!sb) return;
+  await sb.from("tk_point_events").upsert({
+    id: ev.id,
+    eid: ev.eid,
+    type: ev.type,
+    pts: ev.pts,
+    date: ev.date
+  });
+}
+async function sbSaveEmployee(e) {
+  var sb = getSb();
+  if (!sb) return;
+  await sb.from("tk_employees").upsert({
+    id: e.id,
+    badge: e.badge,
+    fn: e.fn,
+    ln: e.ln,
+    pin: e.pin,
+    dept: e.dept,
+    role: e.role,
+    site: e.site,
+    shift: e.shift,
+    shift_start: e.shiftStart,
+    shift_end: e.shiftEnd,
+    work_days: e.workDays,
+    rate: e.rate,
+    status: e.st
+  });
+}
+async function sbSaveRequest(r) {
+  var sb = getSb();
+  if (!sb) return;
+  await sb.from("tk_requests").upsert({
+    id: r.id,
+    eid: r.eid,
+    type: r.type,
+    time: r.time,
+    note: r.note,
+    status: r.status,
+    ip: r.ip
+  });
+}
+async function sbSaveStaff(staff) {
+  var sb = getSb();
+  if (!sb) return;
+  await sb.from("tk_staff").delete().neq("id", "_none_");
+  for (var i = 0; i < staff.length; i++) {
+    await sb.from("tk_staff").upsert({
+      id: staff[i].id,
+      fn: staff[i].fn,
+      ln: staff[i].ln,
+      pin: staff[i].pin,
+      role: staff[i].role
+    });
+  }
+}
+async function sbSaveConfig(key, val) {
+  var sb = getSb();
+  if (!sb) return;
+  await sb.from("tk_config").upsert({
+    key: key,
+    value: val,
+    updated_at: new Date().toISOString()
+  });
+}
 var cachedIP = "unknown";
 (async function () {
   try {
@@ -448,6 +590,93 @@ var cachedIP = "unknown";
 })();
 function getIP() {
   return cachedIP;
+}
+function haversine(lat1, lon1, lat2, lon2) {
+  var R = 6371e3;
+  var p = Math.PI / 180;
+  var dLat = (lat2 - lat1) * p;
+  var dLon = (lon2 - lon1) * p;
+  var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * p) * Math.cos(lat2 * p) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+function checkGeoLocation(gc) {
+  return new Promise(function (resolve) {
+    if (!gc || !gc.enforceGeo) {
+      resolve({
+        ok: true,
+        dist: 0
+      });
+      return;
+    }
+    if (!navigator.geolocation) {
+      resolve({
+        ok: false,
+        reason: "Geolocation not supported by this device"
+      });
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      var dist = haversine(pos.coords.latitude, pos.coords.longitude, gc.siteLat, gc.siteLng);
+      var withinRadius = dist <= gc.geoRadius;
+      resolve({
+        ok: withinRadius,
+        dist: Math.round(dist),
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+        reason: withinRadius ? "" : "You are " + Math.round(dist) + "m from the site (max " + gc.geoRadius + "m)"
+      });
+    }, function (err) {
+      var reasons = {
+        "1": "Location permission denied. Enable location access and try again.",
+        "2": "Unable to determine your location. Check GPS/network.",
+        "3": "Location request timed out. Try again."
+      };
+      resolve({
+        ok: false,
+        reason: reasons[String(err.code)] || "Location error: " + err.message
+      });
+    }, {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 60000
+    });
+  });
+}
+function checkIPAllowed(gc) {
+  if (!gc || !gc.enforceIP || !gc.allowedIPs || gc.allowedIPs.length === 0) return {
+    ok: true
+  };
+  var ip = getIP();
+  var allowed = gc.allowedIPs.some(function (a) {
+    return a.trim() === ip;
+  });
+  return {
+    ok: allowed,
+    reason: allowed ? "" : "IP address " + ip + " is not authorized for this site"
+  };
+}
+function geocodeAddress(addr) {
+  return fetch("https://nominatim.openstreetmap.org/search?format=json&limit=5&addressdetails=1&q=" + encodeURIComponent(addr), {
+    headers: {
+      "Accept": "application/json"
+    }
+  }).then(function (r) {
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return r.json();
+  }).then(function (results) {
+    if (!Array.isArray(results)) return [];
+    return results.map(function (r) {
+      return {
+        lat: parseFloat(r.lat),
+        lng: parseFloat(r.lon),
+        display: r.display_name,
+        type: r.type
+      };
+    });
+  }).catch(function (err) {
+    console.error("Geocode error:", err);
+    return [];
+  });
 }
 function getMonday(d) {
   var dt = new Date(d || new Date());
@@ -816,6 +1045,126 @@ function withPts(emps, events, policy) {
     });
   });
 }
+function detectViolations(emps, punches, pointEvents, policy, monday) {
+  var P = policy || {
+    graceMins: 7,
+    otWeekly: 40
+  };
+  var violations = [];
+  var sun = new Date(monday);
+  sun.setDate(sun.getDate() + 6);
+  sun.setHours(23, 59, 59, 999);
+  var now = new Date();
+  var reviewedKey = function (eid, day, type) {
+    return eid + "-" + day + "-" + type;
+  };
+  var alreadyIssued = {};
+  (pointEvents || []).forEach(function (ev) {
+    var d = new Date(ev.date).toISOString().slice(0, 10);
+    alreadyIssued[ev.eid + "-" + d + "-" + ev.type] = true;
+  });
+  emps.filter(function (e) {
+    return e.st === "active";
+  }).forEach(function (emp) {
+    for (var d = 0; d < 7; d++) {
+      var day = new Date(monday);
+      day.setDate(day.getDate() + d);
+      if (day > now) continue;
+      var dow = day.getDay();
+      if (dow === 0) dow = 7;
+      if (!emp.workDays || emp.workDays.indexOf(dow) === -1) continue;
+      var dayStr = day.toISOString().slice(0, 10);
+      var dayStart = new Date(day);
+      dayStart.setHours(0, 0, 0, 0);
+      var dayEnd = new Date(day);
+      dayEnd.setHours(23, 59, 59, 999);
+      var dayPunches = punches.filter(function (p) {
+        var t = new Date(p.time);
+        return p.eid === emp.id && t >= dayStart && t <= dayEnd;
+      }).sort(function (a, b) {
+        return new Date(a.time) - new Date(b.time);
+      });
+      var shiftStartParts = (emp.shiftStart || "06:00").split(":");
+      var shiftEndParts = (emp.shiftEnd || "14:30").split(":");
+      var schedStart = new Date(day);
+      schedStart.setHours(parseInt(shiftStartParts[0]), parseInt(shiftStartParts[1]), 0, 0);
+      var schedEnd = new Date(day);
+      schedEnd.setHours(parseInt(shiftEndParts[0]), parseInt(shiftEndParts[1]), 0, 0);
+      var graceEnd = new Date(schedStart.getTime() + P.graceMins * 60000);
+      var clockIns = dayPunches.filter(function (p) {
+        return p.type === "in";
+      });
+      var clockOuts = dayPunches.filter(function (p) {
+        return p.type === "out";
+      });
+      if (dayPunches.length === 0) {
+        var key = reviewedKey(emp.id, dayStr, "no-show");
+        if (!alreadyIssued[key]) {
+          var hoursPast = (now - schedStart) / 3600000;
+          if (hoursPast > 2) {
+            violations.push({
+              id: key,
+              eid: emp.id,
+              emp: emp,
+              day: day,
+              dayStr: dayStr,
+              type: "no-show",
+              pts: 2,
+              detail: "No punches on scheduled workday",
+              shift: emp.shiftStart + "–" + emp.shiftEnd
+            });
+          }
+        }
+      } else {
+        if (clockIns.length > 0) {
+          var firstIn = new Date(clockIns[0].time);
+          if (firstIn > graceEnd) {
+            var minsLate = Math.round((firstIn - schedStart) / 60000);
+            var type = minsLate <= 30 ? "tardy-short" : "tardy-long";
+            var pts = minsLate <= 30 ? 0.5 : 1;
+            var key2 = reviewedKey(emp.id, dayStr, type);
+            if (!alreadyIssued[key2]) {
+              violations.push({
+                id: key2,
+                eid: emp.id,
+                emp: emp,
+                day: day,
+                dayStr: dayStr,
+                type: type,
+                pts: pts,
+                detail: minsLate + " min late (arrived " + fmtTime(clockIns[0].time) + ")",
+                shift: emp.shiftStart + "–" + emp.shiftEnd
+              });
+            }
+          }
+        }
+        if (clockOuts.length > 0) {
+          var lastOut = new Date(clockOuts[clockOuts.length - 1].time);
+          var earlyMins = Math.round((schedEnd - lastOut) / 60000);
+          if (earlyMins > P.graceMins) {
+            var key3 = reviewedKey(emp.id, dayStr, "left-early");
+            if (!alreadyIssued[key3]) {
+              violations.push({
+                id: key3,
+                eid: emp.id,
+                emp: emp,
+                day: day,
+                dayStr: dayStr,
+                type: "left-early",
+                pts: 1,
+                detail: earlyMins + " min early (left " + fmtTime(clockOuts[clockOuts.length - 1].time) + ")",
+                shift: emp.shiftStart + "–" + emp.shiftEnd
+              });
+            }
+          }
+        }
+      }
+    }
+  });
+  return violations.sort(function (a, b) {
+    return new Date(b.day) - new Date(a.day);
+  });
+}
 function useMobile() {
   var r = useState(window.innerWidth < 768),
     m = r[0],
@@ -967,7 +1316,7 @@ function StatCard({
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: mo ? 10 : 11,
+      fontSize: mo ? 11 : 11,
       fontWeight: 600,
       color: C.t3,
       fontFamily: Fb,
@@ -984,7 +1333,7 @@ function StatCard({
     }
   }, value), sub && /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: mo ? 10 : 11,
+      fontSize: mo ? 11 : 11,
       color: C.t4,
       marginTop: 4
     }
@@ -1044,7 +1393,7 @@ function PinPad({
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     style: {
       fontFamily: Fb,
-      fontSize: 10,
+      fontSize: 12,
       fontWeight: 600,
       color: C.t4,
       letterSpacing: 2,
@@ -1120,7 +1469,8 @@ function PinPad({
 function Header({
   title,
   sub,
-  onLogout
+  onLogout,
+  staffName
 }) {
   var mo = useMobile();
   return /*#__PURE__*/React.createElement("div", {
@@ -1139,14 +1489,14 @@ function Header({
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: mo ? 13 : 14,
+      fontSize: mo ? 14 : 16,
       fontWeight: 700,
       color: C.t1,
       letterSpacing: 0.3
     }
   }, title), !mo && sub && /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 11,
+      fontSize: 12,
       color: C.t4,
       marginTop: 1
     }
@@ -1154,23 +1504,34 @@ function Header({
     style: {
       display: "flex",
       alignItems: "center",
-      gap: mo ? 6 : 8,
+      gap: mo ? 6 : 10,
       flexShrink: 0
     }
-  }, /*#__PURE__*/React.createElement(Clk, null), /*#__PURE__*/React.createElement(SparkLogo, {
-    size: "sm"
-  }), /*#__PURE__*/React.createElement(DfmLogo, {
+  }, /*#__PURE__*/React.createElement(Clk, null), staffName && /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "4px 10px",
+      borderRadius: 6,
+      background: C.spark + "15",
+      border: "1px solid " + C.spark + "33"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 11,
+      fontWeight: 600,
+      color: C.spark
+    }
+  }, staffName)), /*#__PURE__*/React.createElement(SparkLogo, {
     size: "sm"
   }), onLogout && /*#__PURE__*/React.createElement("button", {
     onClick: onLogout,
     style: {
-      padding: "4px 10px",
-      borderRadius: 5,
+      padding: "6px 14px",
+      borderRadius: 6,
       fontSize: 12,
       fontWeight: 700,
-      color: C.t3,
-      background: C.bg,
-      border: "1px solid " + C.bd,
+      color: C.red,
+      background: C.redD,
+      border: "1px solid " + C.redB,
       letterSpacing: 0.5
     }
   }, "LOCK")));
@@ -1254,13 +1615,115 @@ function AccessGate({
       color: C.red,
       fontWeight: 700
     }
-  }, "ACCESS DENIED"), /*#__PURE__*/React.createElement("div", {
+  }, "ACCESS DENIED")));
+}
+function StaffLogin({
+  staff,
+  onLogin,
+  onCancel
+}) {
+  var mo = useMobile();
+  var r1 = useState(""),
+    pin = r1[0],
+    setPin = r1[1];
+  var r2 = useState(""),
+    err = r2[0],
+    setErr = r2[1];
+  function go(v) {
+    var p = v || pin;
+    var found = staff.find(function (s) {
+      return s.pin === p;
+    });
+    if (found) {
+      onLogin(found);
+    } else {
+      setErr("Invalid PIN");
+      setPin("");
+      setTimeout(function () {
+        setErr("");
+      }, 2500);
+    }
+  }
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      minHeight: "100vh",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      background: C.bg,
+      fontFamily: Fb,
+      padding: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "center"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 28,
+      fontWeight: 900,
+      color: C.spark,
+      letterSpacing: 8,
+      lineHeight: 1
+    }
+  }, "SPARK"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 13,
+      fontWeight: 600,
+      color: C.t4,
+      letterSpacing: 6,
+      marginTop: 6,
+      marginBottom: 8
+    }
+  }, "TIMEKEEP"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: 1,
+      width: 60,
+      background: C.spark,
+      margin: "0 auto 28px",
+      opacity: 0.4
+    }
+  }), /*#__PURE__*/React.createElement(Tag, {
+    color: C.spark
+  }, "STAFF LOGIN"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: C.t3,
+      marginTop: 12,
+      marginBottom: 4
+    }
+  }, "Managers & Administrators Only"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 20
+    }
+  }, /*#__PURE__*/React.createElement(PinPad, {
+    value: pin,
+    onChange: setPin,
+    onSubmit: go,
+    maxLen: 4,
+    label: "ENTER YOUR STAFF PIN"
+  })), err && /*#__PURE__*/React.createElement("div", {
     style: {
       marginTop: 16,
-      fontSize: 11,
-      color: C.t4
+      fontFamily: Fb,
+      fontSize: 14,
+      color: C.red,
+      fontWeight: 700
     }
-  }, "Demo: ", role === "manager" ? "0000" : "9999")));
+  }, err), /*#__PURE__*/React.createElement("button", {
+    onClick: onCancel,
+    style: {
+      marginTop: 20,
+      padding: "10px 28px",
+      borderRadius: 8,
+      fontSize: 13,
+      fontWeight: 600,
+      color: C.t3,
+      background: C.sf,
+      border: "1px solid " + C.bd
+    }
+  }, "Back to Kiosk")));
 }
 function LoadScreen() {
   return /*#__PURE__*/React.createElement("div", {
@@ -1303,7 +1766,7 @@ function LoadScreen() {
     style: {
       marginTop: 12,
       fontFamily: Fb,
-      fontSize: 10,
+      fontSize: 12,
       fontWeight: 600,
       color: C.t4,
       letterSpacing: 2
@@ -1385,7 +1848,7 @@ function AddPunchModal({
     }
   }, /*#__PURE__*/React.createElement("label", {
     style: {
-      fontSize: 9,
+      fontSize: 12,
       fontWeight: 600,
       color: C.t4,
       fontFamily: Fb,
@@ -1414,7 +1877,7 @@ function AddPunchModal({
     }
   }, /*#__PURE__*/React.createElement("label", {
     style: {
-      fontSize: 9,
+      fontSize: 12,
       fontWeight: 600,
       color: C.t4,
       fontFamily: Fb,
@@ -1450,7 +1913,7 @@ function AddPunchModal({
     }
   }, /*#__PURE__*/React.createElement("label", {
     style: {
-      fontSize: 9,
+      fontSize: 12,
       fontWeight: 600,
       color: C.t4,
       fontFamily: Fb,
@@ -1502,7 +1965,9 @@ function KioskView({
   emps,
   punches,
   onPunch,
-  onRequest
+  onRequest,
+  geoConfig,
+  onStaffLogin
 }) {
   var mo = useMobile();
   var r1 = useState("idle"),
@@ -1529,6 +1994,15 @@ function KioskView({
   var r8 = useState(""),
     reqNote = r8[0],
     setReqNote = r8[1];
+  var r9 = useState(false),
+    geoChecking = r9[0],
+    setGeoChecking = r9[1];
+  var r10a = useState(""),
+    geoError = r10a[0],
+    setGeoError = r10a[1];
+  var r10b = useState(null),
+    geoData = r10b[0],
+    setGeoData = r10b[1];
   function reset() {
     setState("idle");
     setBadge("");
@@ -1538,6 +2012,9 @@ function KioskView({
     setReqType("");
     setReqTime("");
     setReqNote("");
+    setGeoChecking(false);
+    setGeoError("");
+    setGeoData(null);
   }
   function lookupBadge(v) {
     var b = v || badge;
@@ -1559,21 +2036,51 @@ function KioskView({
     }
   }
   function doPunch(type) {
-    var p = {
-      id: "P-K-" + Date.now() + "-" + Math.random().toString(36).substr(2, 4),
-      eid: emp.id,
-      type: type,
-      time: new Date().toISOString(),
-      dev: "KIOSK-01",
-      ip: getIP()
-    };
-    onPunch(p);
-    setPunchType(type);
-    setState("confirm");
-    setTimeout(function () {
-      setState("status");
-      setTimeout(reset, 5000);
-    }, 2000);
+    var gc = geoConfig || null;
+    setGeoChecking(true);
+    setGeoError("");
+    var ipCheck = checkIPAllowed(gc);
+    if (!ipCheck.ok) {
+      setGeoChecking(false);
+      setGeoError(ipCheck.reason);
+      setGeoData({
+        type: "ip"
+      });
+      setState("geo-denied");
+      setTimeout(reset, 8000);
+      return;
+    }
+    checkGeoLocation(gc).then(function (geoResult) {
+      setGeoChecking(false);
+      if (!geoResult.ok) {
+        setGeoError(geoResult.reason);
+        setGeoData({
+          type: "geo",
+          dist: geoResult.dist
+        });
+        setState("geo-denied");
+        setTimeout(reset, 8000);
+        return;
+      }
+      var p = {
+        id: "P-K-" + Date.now() + "-" + Math.random().toString(36).substr(2, 4),
+        eid: emp.id,
+        type: type,
+        time: new Date().toISOString(),
+        dev: "KIOSK-MARSHALL-01",
+        ip: getIP(),
+        lat: geoResult.lat || null,
+        lng: geoResult.lng || null,
+        dist: geoResult.dist || 0
+      };
+      onPunch(p);
+      setPunchType(type);
+      setState("confirm");
+      setTimeout(function () {
+        setState("status");
+        setTimeout(reset, 5000);
+      }, 2000);
+    });
   }
   function submitRequest() {
     if (!reqType || !reqTime) return;
@@ -1591,59 +2098,85 @@ function KioskView({
     setTimeout(reset, 4000);
   }
   var content = null;
-  if (state === "idle") content = /*#__PURE__*/React.createElement("div", {
-    style: {
-      textAlign: "center"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: mo ? 40 : 56,
-      fontWeight: 900,
-      color: C.spark,
-      letterSpacing: mo ? 6 : 12,
-      lineHeight: 1
-    }
-  }, "SPARK"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: mo ? 16 : 20,
-      fontWeight: 600,
-      color: C.t4,
-      letterSpacing: mo ? 6 : 10,
-      marginTop: 6
-    }
-  }, "TIMEKEEP"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      height: 1,
-      width: 60,
-      background: C.spark,
-      margin: (mo ? "16px" : "20px") + " auto " + (mo ? "24px" : "40px"),
-      opacity: 0.3
-    }
-  }), /*#__PURE__*/React.createElement(Clk, {
-    big: true
-  }), /*#__PURE__*/React.createElement("button", {
-    onClick: function () {
-      setState("badge");
-    },
-    style: {
-      marginTop: mo ? 32 : 48,
-      padding: mo ? "14px 36px" : "18px 52px",
-      fontSize: mo ? 14 : 16,
-      fontWeight: 800,
-      letterSpacing: 3,
-      color: C.bg,
-      background: C.spark,
-      borderRadius: 12,
-      animation: "glow 3s ease infinite"
-    }
-  }, "TAP TO CLOCK IN / OUT"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginTop: mo ? 14 : 20,
-      fontSize: mo ? 10 : 11,
-      color: C.t4,
-      letterSpacing: 0.5
-    }
-  }, "DFM Marshall \xB7 Spark Talent"));
+  if (state === "idle") {
+    var gc = geoConfig || {};
+    content = /*#__PURE__*/React.createElement("div", {
+      style: {
+        textAlign: "center"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: mo ? 40 : 56,
+        fontWeight: 900,
+        color: C.spark,
+        letterSpacing: mo ? 6 : 12,
+        lineHeight: 1
+      }
+    }, "SPARK"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: mo ? 16 : 20,
+        fontWeight: 600,
+        color: C.t4,
+        letterSpacing: mo ? 6 : 10,
+        marginTop: 6
+      }
+    }, "TIMEKEEP"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        height: 1,
+        width: 60,
+        background: C.spark,
+        margin: (mo ? "16px" : "20px") + " auto " + (mo ? "24px" : "40px"),
+        opacity: 0.3
+      }
+    }), /*#__PURE__*/React.createElement(Clk, {
+      big: true
+    }), /*#__PURE__*/React.createElement("button", {
+      onClick: function () {
+        setState("badge");
+      },
+      style: {
+        marginTop: mo ? 32 : 48,
+        padding: mo ? "14px 36px" : "18px 52px",
+        fontSize: mo ? 14 : 16,
+        fontWeight: 800,
+        letterSpacing: 3,
+        color: C.bg,
+        background: C.spark,
+        borderRadius: 12,
+        animation: "glow 3s ease infinite"
+      }
+    }, "TAP TO CLOCK IN / OUT"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        marginTop: mo ? 14 : 20,
+        fontSize: mo ? 11 : 11,
+        color: C.t4,
+        letterSpacing: 0.5
+      }
+    }, "DFM Marshall \xB7 Spark Talent"), gc.enforceGeo || gc.enforceIP ? /*#__PURE__*/React.createElement("div", {
+      style: {
+        marginTop: 12,
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 8,
+        padding: "4px 12px",
+        borderRadius: 6,
+        background: C.sf,
+        border: "1px solid " + C.bd
+      }
+    }, gc.enforceGeo ? /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 12,
+        color: C.green,
+        fontWeight: 600
+      }
+    }, "\u25C9 GPS") : null, gc.enforceIP ? /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 12,
+        color: C.blue,
+        fontWeight: 600
+      }
+    }, "\u25C9 IP Lock") : null) : null);
+  }
   if (state === "badge") content = /*#__PURE__*/React.createElement("div", {
     style: {
       textAlign: "center"
@@ -1654,19 +2187,13 @@ function KioskView({
     onSubmit: lookupBadge,
     maxLen: 4,
     label: "SCAN OR ENTER BADGE NUMBER"
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginTop: 14,
-      fontSize: 12,
-      color: C.t4
-    }
-  }, "Demo badges: 0001\u20130010"), /*#__PURE__*/React.createElement("button", {
+  }), /*#__PURE__*/React.createElement("button", {
     onClick: reset,
     style: {
-      marginTop: 12,
+      marginTop: 16,
       padding: "8px 20px",
       borderRadius: 8,
-      fontSize: 11,
+      fontSize: 12,
       color: C.t3,
       background: C.sf,
       border: "1px solid " + C.bd
@@ -1689,7 +2216,7 @@ function KioskView({
     }
   }, emp.fn, " ", emp.ln), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 11,
+      fontSize: 12,
       color: C.t4,
       marginBottom: 16
     }
@@ -1705,7 +2232,7 @@ function KioskView({
       marginTop: 12,
       padding: "8px 20px",
       borderRadius: 8,
-      fontSize: 11,
+      fontSize: 12,
       color: C.t3,
       background: C.sf,
       border: "1px solid " + C.bd
@@ -1732,7 +2259,7 @@ function KioskView({
       }
     }, emp.fn, " ", emp.ln), /*#__PURE__*/React.createElement("div", {
       style: {
-        fontSize: 11,
+        fontSize: 12,
         color: C.t4,
         marginBottom: 4
       }
@@ -1741,12 +2268,39 @@ function KioskView({
     }, cs.label), /*#__PURE__*/React.createElement("div", {
       style: {
         fontFamily: Fm,
-        fontSize: 10,
+        fontSize: 12,
         color: C.t3,
         marginTop: 4,
         marginBottom: 20
       }
-    }, "Week: ", wk.toFixed(1), "h", wk >= 38 ? " · ⚠ OT approaching" : ""), /*#__PURE__*/React.createElement("div", {
+    }, "Week: ", wk.toFixed(1), "h", wk >= 38 ? " · ⚠ OT approaching" : ""), geoChecking ? /*#__PURE__*/React.createElement("div", {
+      style: {
+        padding: 24
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        width: 36,
+        height: 36,
+        border: "3px solid " + C.bd,
+        borderTopColor: C.spark,
+        borderRadius: "50%",
+        margin: "0 auto",
+        animation: "spin 0.8s linear infinite"
+      }
+    }), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 13,
+        color: C.t2,
+        marginTop: 12,
+        fontWeight: 600
+      }
+    }, "Verifying location..."), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: C.t4,
+        marginTop: 4
+      }
+    }, "Checking GPS coordinates and IP address")) : /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
       style: {
         display: "flex",
         gap: 8,
@@ -1792,12 +2346,12 @@ function KioskView({
         margin: "12px auto 0",
         padding: "8px 20px",
         borderRadius: 8,
-        fontSize: 11,
+        fontSize: 12,
         color: C.t3,
         background: C.sf,
         border: "1px solid " + C.bd
       }
-    }, "Cancel"));
+    }, "Cancel")));
   }
   if (state === "missed" && emp) {
     content = /*#__PURE__*/React.createElement("div", {
@@ -1913,6 +2467,7 @@ function KioskView({
       l: punchType,
       c: C.green
     };
+    var gc = geoConfig || {};
     content = /*#__PURE__*/React.createElement("div", {
       style: {
         textAlign: "center"
@@ -1945,7 +2500,24 @@ function KioskView({
         color: pt.c,
         marginTop: 6
       }
-    }, fmtTime(new Date().toISOString())));
+    }, fmtTime(new Date().toISOString())), gc.enforceGeo || gc.enforceIP ? /*#__PURE__*/React.createElement("div", {
+      style: {
+        marginTop: 10,
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        padding: "4px 12px",
+        borderRadius: 6,
+        background: C.greenD,
+        border: "1px solid " + C.greenB
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 11,
+        color: C.green,
+        fontWeight: 600
+      }
+    }, "\u25C9 Location Verified")) : null);
   }
   if (state === "status" && emp) {
     var cs2 = getCurrentState(emp, punches);
@@ -1986,7 +2558,7 @@ function KioskView({
       }, /*#__PURE__*/React.createElement("div", {
         style: {
           fontFamily: Fm,
-          fontSize: 8,
+          fontSize: 12,
           color: d.isToday ? C.spark : C.t4,
           letterSpacing: 1
         }
@@ -2008,7 +2580,7 @@ function KioskView({
     }, wk2.toFixed(1), "h"), /*#__PURE__*/React.createElement("div", {
       style: {
         fontFamily: Fm,
-        fontSize: 10,
+        fontSize: 12,
         color: C.t4
       }
     }, "this week"), /*#__PURE__*/React.createElement("button", {
@@ -2099,13 +2671,73 @@ function KioskView({
       marginTop: 6
     }
   }, "Check your badge number or PIN"));
+  if (state === "geo-denied") content = /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "center"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 70,
+      height: 70,
+      borderRadius: 35,
+      background: C.redD,
+      border: "2px solid " + C.red,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      margin: "0 auto",
+      fontSize: 32
+    }
+  }, "\u2298"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 20,
+      fontWeight: 800,
+      color: C.red,
+      marginTop: 14,
+      letterSpacing: 2
+    }
+  }, "LOCATION BLOCKED"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 14,
+      color: C.t2,
+      marginTop: 10,
+      maxWidth: 340,
+      margin: "10px auto 0"
+    }
+  }, geoError), geoData && geoData.type === "geo" && geoData.dist ? /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: Fm,
+      fontSize: 13,
+      color: C.orange,
+      marginTop: 10
+    }
+  }, "Distance: ", geoData.dist, "m from site") : null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: C.t4,
+      marginTop: 14
+    }
+  }, "Contact your site supervisor for assistance"), /*#__PURE__*/React.createElement("button", {
+    onClick: reset,
+    style: {
+      marginTop: 16,
+      padding: "10px 24px",
+      borderRadius: 8,
+      fontSize: 13,
+      fontWeight: 600,
+      color: C.t3,
+      background: C.sf,
+      border: "1px solid " + C.bd
+    }
+  }, "Back"));
   return /*#__PURE__*/React.createElement("div", {
     style: {
       minHeight: "100vh",
       display: "flex",
       flexDirection: "column",
       background: C.bg,
-      fontFamily: Fb
+      fontFamily: Fb,
+      position: "relative"
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
@@ -2133,7 +2765,7 @@ function KioskView({
   }), /*#__PURE__*/React.createElement("span", {
     style: {
       fontFamily: Fb,
-      fontSize: mo ? 8 : 10,
+      fontSize: mo ? 10 : 12,
       fontWeight: 600,
       color: C.t4,
       letterSpacing: 1
@@ -2167,37 +2799,25 @@ function KioskView({
     }
   }, /*#__PURE__*/React.createElement("span", {
     style: {
-      fontSize: mo ? 9 : 10,
+      fontSize: mo ? 10 : 12,
       color: C.t4,
       letterSpacing: 0.5
     }
-  }, "\xA9 2026 Spark Companies \xB7 DFM Solutions"), /*#__PURE__*/React.createElement("div", {
+  }, "\xA9 2026 Spark Companies \xB7 DFM Solutions"), onStaffLogin && /*#__PURE__*/React.createElement("button", {
+    onClick: onStaffLogin,
     style: {
+      padding: "8px 18px",
+      borderRadius: 8,
+      background: C.spark + "15",
+      border: "1px solid " + C.spark + "44",
+      fontSize: 13,
+      color: C.spark,
+      fontWeight: 700,
       display: "flex",
-      gap: 4
+      alignItems: "center",
+      gap: 6
     }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      width: 4,
-      height: 4,
-      borderRadius: "50%",
-      background: C.green
-    }
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      width: 4,
-      height: 4,
-      borderRadius: "50%",
-      background: C.green
-    }
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      width: 4,
-      height: 4,
-      borderRadius: "50%",
-      background: C.spark
-    }
-  }))));
+  }, "\u2699 Staff Login")));
 }
 
 /* ═══ MANAGER VIEW ═══ */
@@ -2210,11 +2830,9 @@ function ManagerView({
   requests,
   onApproveRequest,
   onDenyRequest,
-  ptoRequests,
-  onApprovePto,
-  onDenyPto,
   policy,
-  onLogout
+  onLogout,
+  staffName
 }) {
   var mo = useMobile();
   var P = policy || DEFAULT_POLICY;
@@ -2245,9 +2863,6 @@ function ManagerView({
   var pending = requests.filter(function (r) {
     return r.status === "pending";
   });
-  var pendingPto = ptoRequests.filter(function (r) {
-    return r.status === "pending";
-  });
   var active = emps.filter(function (e) {
     return e.st === "active";
   });
@@ -2263,6 +2878,12 @@ function ManagerView({
     month: "short",
     day: "numeric",
     year: "numeric"
+  });
+  var rdismissed = useState({}),
+    dismissed = rdismissed[0],
+    setDismissed = rdismissed[1];
+  var violations = detectViolations(emps, punches, pointEvents, P, mon).filter(function (v) {
+    return !dismissed[v.id];
   });
   var statuses = active.map(function (e) {
     var cs = getCurrentState(e, punches);
@@ -2350,20 +2971,11 @@ function ManagerView({
     color: C.spark,
     time: new Date().toISOString()
   });
-  if (pendingPto.length > 0) alerts.push({
-    id: "A-pto-req",
-    type: "pto-req",
-    sev: 1,
-    label: "PTO Requests",
-    detail: pendingPto.length + " pending",
-    color: C.blue,
-    time: new Date().toISOString()
-  });
   alerts.sort(function (a, b) {
     return (b.sev || 0) - (a.sev || 0);
   });
-  var totalBadges = pending.length + pendingPto.length;
-  var tabDef = [["dashboard", "Dashboard"], ["whos-in", "Who's In"], ["timesheets", "Timesheets"], ["pto", "PTO" + (pendingPto.length > 0 ? " (" + pendingPto.length + ")" : "")], ["alerts", "Alerts" + (alerts.length > 0 ? " (" + alerts.length + ")" : "")], ["approvals", "Approvals" + (pending.length > 0 ? " (" + pending.length + ")" : "")]];
+  var totalBadges = pending.length;
+  var tabDef = [["dashboard", "Dashboard" + (violations.length > 0 ? " (" + violations.length + ")" : "")], ["whos-in", "Who's In"], ["timesheets", "Timesheets"], ["alerts", "Alerts" + (alerts.length > 0 ? " (" + alerts.length + ")" : "")], ["approvals", "Approvals" + (pending.length > 0 ? " (" + pending.length + ")" : "")]];
   return /*#__PURE__*/React.createElement("div", {
     style: {
       minHeight: "100vh",
@@ -2373,7 +2985,8 @@ function ManagerView({
   }, /*#__PURE__*/React.createElement(Header, {
     title: "Manager Dashboard",
     sub: "Monitoring " + active.length + " employees",
-    onLogout: onLogout
+    onLogout: onLogout,
+    staffName: staffName
   }), /*#__PURE__*/React.createElement("div", {
     style: {
       padding: mo ? 12 : 28
@@ -2449,7 +3062,7 @@ function ManagerView({
       setSelEmp(null);
     },
     style: {
-      fontSize: 9,
+      fontSize: 11,
       fontWeight: 600,
       color: C.spark,
       background: "none",
@@ -2458,7 +3071,7 @@ function ManagerView({
     }
   }, "\u21BB Jump to Current Week"), isCurrentWeek && /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 9,
+      fontSize: 11,
       color: C.green,
       fontWeight: 600
     }
@@ -2513,10 +3126,151 @@ function ManagerView({
   }), /*#__PURE__*/React.createElement(StatCard, {
     label: "PENDING",
     value: totalBadges,
-    sub: (pending.length > 0 ? pending.length + " punches " : "") + (pendingPto.length > 0 ? pendingPto.length + " PTO" : ""),
+    sub: pending.length > 0 ? pending.length + " pending" : "none",
     color: totalBadges > 0 ? C.spark : C.green,
     icon: "\uD83D\uDCCB"
-  })), /*#__PURE__*/React.createElement("div", {
+  })), violations.length > 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: C.sf,
+      border: "2px solid " + C.orange + "44",
+      borderRadius: 12,
+      padding: mo ? 12 : 16,
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 16
+    }
+  }, "\u26A1"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 14,
+      fontWeight: 700,
+      color: C.orange
+    }
+  }, "Auto-Detected Violations (", violations.length, ")")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: C.t4
+    }
+  }, "Review and approve or dismiss")), violations.slice(0, 10).map(function (v) {
+    var rule = RULES.find(function (r) {
+      return r.k === v.type;
+    }) || {
+      v: v.type
+    };
+    var colors = {};
+    colors["no-show"] = C.red;
+    colors["tardy-short"] = C.spark;
+    colors["tardy-long"] = C.orange;
+    colors["left-early"] = C.orange;
+    var col = colors[v.type] || C.t3;
+    return /*#__PURE__*/React.createElement("div", {
+      key: v.id,
+      style: {
+        display: "flex",
+        alignItems: mo ? "flex-start" : "center",
+        justifyContent: "space-between",
+        gap: 10,
+        padding: "10px 0",
+        borderBottom: "1px solid " + C.bd + "22",
+        flexDirection: mo ? "column" : "row"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        flex: 1
+      }
+    }, /*#__PURE__*/React.createElement(Av, {
+      fn: v.emp.fn,
+      ln: v.emp.ln,
+      sz: 28
+    }), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 13,
+        fontWeight: 600,
+        color: C.t1
+      }
+    }, v.emp.fn, " ", v.emp.ln, " ", /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontWeight: 400,
+        color: C.t4
+      }
+    }, "\xB7 ", v.emp.dept)), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: C.t3,
+        marginTop: 2
+      }
+    }, new Date(v.day).toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric"
+    }), " \xB7 ", v.detail))), /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 6
+      }
+    }, /*#__PURE__*/React.createElement(Tag, {
+      color: col
+    }, rule.v, " (+", v.pts, ")"), /*#__PURE__*/React.createElement("button", {
+      onClick: function () {
+        onIssuePoint(v.eid, v.type, undefined, v.day.toISOString());
+        setDismissed(Object.assign({}, dismissed, function () {
+          var o = {};
+          o[v.id] = true;
+          return o;
+        }()));
+      },
+      style: {
+        padding: "6px 14px",
+        borderRadius: 6,
+        fontSize: 12,
+        fontWeight: 700,
+        color: C.bg,
+        background: C.green
+      }
+    }, "Approve"), /*#__PURE__*/React.createElement("button", {
+      onClick: function () {
+        setDismissed(Object.assign({}, dismissed, function () {
+          var o = {};
+          o[v.id] = true;
+          return o;
+        }()));
+      },
+      style: {
+        padding: "6px 14px",
+        borderRadius: 6,
+        fontSize: 12,
+        fontWeight: 600,
+        color: C.t3,
+        background: C.bg,
+        border: "1px solid " + C.bd
+      }
+    }, "Dismiss")));
+  }), violations.length > 10 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: C.t4,
+      marginTop: 8,
+      textAlign: "center"
+    }
+  }, "Showing 10 of ", violations.length, " violations")), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
       gap: 8,
@@ -2605,7 +3359,7 @@ function ManagerView({
       setSelDay(null);
     },
     style: {
-      fontSize: 11,
+      fontSize: 12,
       color: C.t3,
       background: "none",
       border: "none"
@@ -2643,7 +3397,7 @@ function ManagerView({
     }
   }, "Weekly Timesheet"), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 10,
+      fontSize: 12,
       color: isCurrentWeek ? C.spark : C.t4
     }
   }, weekLabel, isCurrentWeek ? " (Current)" : "")), /*#__PURE__*/React.createElement("button", {
@@ -2689,7 +3443,7 @@ function ManagerView({
         }
       }, /*#__PURE__*/React.createElement("div", {
         style: {
-          fontSize: 9,
+          fontSize: 11,
           fontWeight: 600,
           color: isSel ? C.spark : C.t4,
           letterSpacing: 1,
@@ -2697,7 +3451,7 @@ function ManagerView({
         }
       }, d.day), /*#__PURE__*/React.createElement("div", {
         style: {
-          fontSize: 8,
+          fontSize: 12,
           color: C.t4,
           marginBottom: 2
         }
@@ -2713,7 +3467,7 @@ function ManagerView({
         }
       }, d.hrs > 0 ? d.hrs.toFixed(1) : "-"), /*#__PURE__*/React.createElement("div", {
         style: {
-          fontSize: 8,
+          fontSize: 12,
           color: C.t4
         }
       }, d.punches.length, " punch", d.punches.length !== 1 ? "es" : ""));
@@ -2738,7 +3492,7 @@ function ManagerView({
       day: "numeric"
     }), " \u2014 Punch Detail"), daily[selDay].punches.length === 0 ? /*#__PURE__*/React.createElement("div", {
       style: {
-        fontSize: 11,
+        fontSize: 12,
         color: C.t4,
         padding: "8px 0"
       }
@@ -2786,10 +3540,20 @@ function ManagerView({
         second: "2-digit"
       })), /*#__PURE__*/React.createElement("div", {
         style: {
-          fontSize: 9,
+          textAlign: "right"
+        }
+      }, /*#__PURE__*/React.createElement("div", {
+        style: {
+          fontSize: 12,
           color: C.t4
         }
-      }, p.dev || "KIOSK", p.ip ? " · " + p.ip : ""));
+      }, p.dev || "KIOSK", p.ip ? " · " + p.ip : ""), p.lat ? /*#__PURE__*/React.createElement("div", {
+        style: {
+          fontSize: 12,
+          color: C.green,
+          fontFamily: Fm
+        }
+      }, "\u25C9 ", p.lat.toFixed(4), "\xB0, ", p.lng.toFixed(4), "\xB0", p.dist != null ? " · " + p.dist + "m" : "") : null));
     }), daily[selDay].punches.length > 0 && /*#__PURE__*/React.createElement("div", {
       style: {
         marginTop: 8,
@@ -2837,7 +3601,7 @@ function ManagerView({
     }
   }, calcWeekHoursForWeek(punches, selEmp.id, mon).toFixed(1), "h")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
     style: {
-      fontSize: 10,
+      fontSize: 12,
       color: C.t4
     }
   }, "Reg: "), /*#__PURE__*/React.createElement("span", {
@@ -2849,7 +3613,7 @@ function ManagerView({
     }
   }, calcLaborCostForWeek(selEmp, punches, P, mon).regH.toFixed(1), "h")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
     style: {
-      fontSize: 10,
+      fontSize: 12,
       color: C.t4
     }
   }, "OT: "), /*#__PURE__*/React.createElement("span", {
@@ -2861,7 +3625,7 @@ function ManagerView({
     }
   }, calcLaborCostForWeek(selEmp, punches, P, mon).otH.toFixed(1), "h")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
     style: {
-      fontSize: 10,
+      fontSize: 12,
       color: C.t4
     }
   }, "Cost: "), /*#__PURE__*/React.createElement("span", {
@@ -2873,7 +3637,7 @@ function ManagerView({
     }
   }, "$", calcLaborCostForWeek(selEmp, punches, P, mon).total.toFixed(2))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
     style: {
-      fontSize: 10,
+      fontSize: 12,
       color: C.t4
     }
   }, "Points: "), /*#__PURE__*/React.createElement(PtBar, {
@@ -2911,12 +3675,12 @@ function ManagerView({
       style: {
         color: C.t4
       }
-    }, p.dev || "", p.ip ? " · " + p.ip : ""));
+    }, p.dev || "", p.ip ? " · " + p.ip : "", p.lat ? " · ◉" : ""));
   }), punches.filter(function (p) {
     return p.eid === selEmp.id && new Date(p.time) >= mon && new Date(p.time) <= sun;
   }).length === 0 && /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 11,
+      fontSize: 12,
       color: C.t4,
       padding: "4px 0"
     }
@@ -2944,7 +3708,7 @@ function ManagerView({
       style: {
         padding: "5px 10px",
         borderRadius: 6,
-        fontSize: 10,
+        fontSize: 12,
         fontWeight: 600,
         color: C.bg,
         background: C.spark
@@ -2965,7 +3729,7 @@ function ManagerView({
       style: {
         padding: mo ? "6px 4px" : "8px 10px",
         textAlign: "left",
-        fontSize: mo ? 10 : 12,
+        fontSize: mo ? 11 : 12,
         fontWeight: 600,
         color: C.t4,
         borderBottom: "1px solid " + C.bd,
@@ -3005,7 +3769,7 @@ function ManagerView({
       }
     }, e.fn, " ", e.ln), /*#__PURE__*/React.createElement("div", {
       style: {
-        fontSize: 11,
+        fontSize: 12,
         color: C.t4
       }
     }, e.badge, " \xB7 ", e.dept)))), /*#__PURE__*/React.createElement("td", {
@@ -3041,7 +3805,7 @@ function ManagerView({
       }
     }, e.excs.length > 0 && /*#__PURE__*/React.createElement("span", {
       style: {
-        fontSize: 10,
+        fontSize: 12,
         color: e.excs[0].color
       }
     }, e.excs.map(function (x) {
@@ -3091,7 +3855,7 @@ function ManagerView({
     }
   }, "Exceptions (", allExcs.length, ")"), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 9,
+      fontSize: 12,
       color: C.t4
     }
   }, "Auto-detected")), allExcs.length === 0 ? /*#__PURE__*/React.createElement("div", {
@@ -3132,7 +3896,7 @@ function ManagerView({
       }
     }, x.emp.fn, " ", x.emp.ln), /*#__PURE__*/React.createElement("div", {
       style: {
-        fontSize: 10,
+        fontSize: 12,
         color: x.color
       }
     }, x.label, " \u2014 ", x.detail)));
@@ -3170,13 +3934,13 @@ function ManagerView({
       }
     }, /*#__PURE__*/React.createElement("span", {
       style: {
-        fontSize: 10,
+        fontSize: 12,
         color: C.t2
       }
     }, e.fn, " ", e.ln[0], "."), /*#__PURE__*/React.createElement("span", {
       style: {
         fontFamily: Fm,
-        fontSize: 9,
+        fontSize: 11,
         color: barColor
       }
     }, actual.toFixed(1), "h/", expected, "h avg")), /*#__PURE__*/React.createElement("div", {
@@ -3231,7 +3995,7 @@ function ManagerView({
     }, e.fn, " ", e.ln[0], "."), /*#__PURE__*/React.createElement("div", {
       style: {
         fontFamily: Fm,
-        fontSize: 9,
+        fontSize: 12,
         color: C.t4
       }
     }, e.cost.regH.toFixed(1), "h reg", e.cost.otH > 0 ? " + " + e.cost.otH.toFixed(1) + "h OT" : "")), /*#__PURE__*/React.createElement("div", {
@@ -3248,7 +4012,7 @@ function ManagerView({
     }, "$", e.cost.total.toFixed(0)), /*#__PURE__*/React.createElement("div", {
       style: {
         fontFamily: Fm,
-        fontSize: 9,
+        fontSize: 12,
         color: C.t4
       }
     }, "$", e.rate || 16, "/hr")));
@@ -3282,7 +4046,7 @@ function ManagerView({
     }
   }, "Live Attendance Board"), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 11,
+      fontSize: 12,
       color: C.t4,
       marginBottom: 16
     }
@@ -3323,7 +4087,7 @@ function ManagerView({
     }
   })), clockedIn.length === 0 ? /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 11,
+      fontSize: 12,
       color: C.t4
     }
   }, "No one clocked in") : clockedIn.map(function (e) {
@@ -3354,7 +4118,7 @@ function ManagerView({
     }, e.fn, " ", e.ln), /*#__PURE__*/React.createElement("div", {
       style: {
         fontFamily: Fm,
-        fontSize: 11,
+        fontSize: 12,
         color: C.t4
       }
     }, e.dept, " \xB7 since ", sinceStr)), /*#__PURE__*/React.createElement("div", {
@@ -3391,7 +4155,7 @@ function ManagerView({
     }
   }, "\u2615")), onBreak.length === 0 ? /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 11,
+      fontSize: 12,
       color: C.t4
     }
   }, "No active breaks") : onBreak.map(function (e) {
@@ -3422,7 +4186,7 @@ function ManagerView({
     }, e.fn, " ", e.ln), /*#__PURE__*/React.createElement("div", {
       style: {
         fontFamily: Fm,
-        fontSize: 11,
+        fontSize: 12,
         color: C.t4
       }
     }, e.dept, " \xB7 break since ", sinceStr)));
@@ -3481,7 +4245,7 @@ function ManagerView({
     }, e.fn, " ", e.ln), /*#__PURE__*/React.createElement("div", {
       style: {
         fontFamily: Fm,
-        fontSize: 11,
+        fontSize: 12,
         color: C.t4
       }
     }, e.dept, " \xB7 ", e.shiftStart, "\u2013", e.shiftEnd)), isLate && /*#__PURE__*/React.createElement(Tag, {
@@ -3542,7 +4306,7 @@ function ManagerView({
     }, inCount, "/", total), /*#__PURE__*/React.createElement("div", {
       style: {
         fontFamily: Fm,
-        fontSize: 9,
+        fontSize: 12,
         color: C.t4
       }
     }, pct, "% present"));
@@ -3555,7 +4319,7 @@ function ManagerView({
     }
   }, "Weekly Timesheets"), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 11,
+      fontSize: 12,
       color: C.t4,
       marginBottom: 14
     }
@@ -3572,7 +4336,7 @@ function ManagerView({
     style: {
       padding: "8px 10px",
       textAlign: "left",
-      fontSize: 10,
+      fontSize: 12,
       fontWeight: 600,
       color: C.t4,
       borderBottom: "1px solid " + C.bd,
@@ -3584,7 +4348,7 @@ function ManagerView({
       style: {
         padding: "8px 6px",
         textAlign: "center",
-        fontSize: 10,
+        fontSize: 12,
         fontWeight: 600,
         color: C.t4,
         borderBottom: "1px solid " + C.bd,
@@ -3595,7 +4359,7 @@ function ManagerView({
     style: {
       padding: "8px 6px",
       textAlign: "center",
-      fontSize: 10,
+      fontSize: 12,
       fontWeight: 600,
       color: C.spark,
       borderBottom: "1px solid " + C.bd,
@@ -3605,7 +4369,7 @@ function ManagerView({
     style: {
       padding: "8px 6px",
       textAlign: "center",
-      fontSize: 10,
+      fontSize: 12,
       fontWeight: 600,
       color: C.orange,
       borderBottom: "1px solid " + C.bd,
@@ -3615,7 +4379,7 @@ function ManagerView({
     style: {
       padding: "8px 6px",
       textAlign: "center",
-      fontSize: 10,
+      fontSize: 12,
       fontWeight: 600,
       color: C.t4,
       borderBottom: "1px solid " + C.bd,
@@ -3625,7 +4389,7 @@ function ManagerView({
     style: {
       padding: "8px 6px",
       textAlign: "center",
-      fontSize: 10,
+      fontSize: 12,
       fontWeight: 600,
       color: C.t4,
       borderBottom: "1px solid " + C.bd,
@@ -3727,7 +4491,7 @@ function ManagerView({
       style: {
         padding: "4px 10px",
         borderRadius: 5,
-        fontSize: 9,
+        fontSize: 11,
         fontWeight: 700,
         color: C.bg,
         background: C.green,
@@ -3743,7 +4507,7 @@ function ManagerView({
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 11,
+      fontSize: 12,
       color: C.t4
     }
   }, Object.values(approvals).filter(function (v) {
@@ -3764,285 +4528,7 @@ function ManagerView({
       color: C.bg,
       background: C.green
     }
-  }, "Approve All"))), mTab === "pto" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 13,
-      fontWeight: 700,
-      color: C.t1,
-      marginBottom: 4
-    }
-  }, "PTO Management"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 11,
-      color: C.t4,
-      marginBottom: 16
-    }
-  }, "Time-off requests, balances, and approvals"), pendingPto.length > 0 && /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginBottom: 20
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 12,
-      fontWeight: 700,
-      color: C.blue,
-      marginBottom: 8
-    }
-  }, "Pending Requests (", pendingPto.length, ")"), pendingPto.map(function (req) {
-    var emp2 = emps.find(function (e) {
-      return e.id === req.eid;
-    });
-    var ptoType = PTO_TYPES.find(function (t) {
-      return t.k === req.ptoType;
-    }) || {
-      l: req.ptoType,
-      c: C.t3,
-      icon: "📋"
-    };
-    return /*#__PURE__*/React.createElement("div", {
-      key: req.id,
-      style: {
-        display: "flex",
-        alignItems: mo ? "flex-start" : "center",
-        justifyContent: "space-between",
-        gap: 10,
-        background: C.sf,
-        border: "1px solid " + C.bd,
-        borderRadius: 10,
-        padding: "10px 14px",
-        marginBottom: 6,
-        flexDirection: mo ? "column" : "row"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        alignItems: "center",
-        gap: 10,
-        flex: 1
-      }
-    }, /*#__PURE__*/React.createElement(Av, {
-      fn: emp2 ? emp2.fn : "?",
-      ln: emp2 ? emp2.ln : "?",
-      sz: 28
-    }), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 12,
-        fontWeight: 600,
-        color: C.t1
-      }
-    }, emp2 ? emp2.fn + " " + emp2.ln : "Unknown"), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 10,
-        color: C.t4
-      }
-    }, /*#__PURE__*/React.createElement(Tag, {
-      color: ptoType.c
-    }, ptoType.icon, " ", ptoType.l), " \xB7 ", new Date(req.startDate).toLocaleDateString(), " \u2013 ", new Date(req.endDate).toLocaleDateString(), " \xB7 ", req.hours, "h"), req.note && /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 12,
-        color: C.t3,
-        marginTop: 2
-      }
-    }, "\"", req.note, "\""))), /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        gap: 6,
-        flexShrink: 0
-      }
-    }, /*#__PURE__*/React.createElement("button", {
-      onClick: function () {
-        onApprovePto(req.id);
-      },
-      style: {
-        padding: "6px 14px",
-        borderRadius: 6,
-        fontSize: 13,
-        fontWeight: 700,
-        color: C.bg,
-        background: C.green
-      }
-    }, "Approve"), /*#__PURE__*/React.createElement("button", {
-      onClick: function () {
-        onDenyPto(req.id);
-      },
-      style: {
-        padding: "6px 14px",
-        borderRadius: 6,
-        fontSize: 11,
-        fontWeight: 600,
-        color: C.red,
-        background: C.redD,
-        border: "1px solid " + C.redB
-      }
-    }, "Deny")));
-  })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 14,
-      fontWeight: 700,
-      color: C.t1,
-      marginBottom: 10
-    }
-  }, "Employee PTO Balances"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      overflowX: "auto"
-    }
-  }, /*#__PURE__*/React.createElement("table", {
-    style: {
-      width: "100%",
-      borderCollapse: "collapse"
-    }
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, ["Employee", "Vacation", "Sick", "Personal", "Total Available"].map(function (h) {
-    return /*#__PURE__*/React.createElement("th", {
-      key: h,
-      style: {
-        padding: "8px 10px",
-        textAlign: h === "Employee" ? "left" : "center",
-        fontSize: 10,
-        fontWeight: 600,
-        color: C.t4,
-        borderBottom: "1px solid " + C.bd,
-        fontFamily: Fb
-      }
-    }, h);
-  }))), /*#__PURE__*/React.createElement("tbody", null, active.map(function (e) {
-    var bal = e.ptoBalances || {
-      vacation: 0,
-      sick: 0,
-      personal: 0
-    };
-    var totalBal = bal.vacation + bal.sick + bal.personal;
-    return /*#__PURE__*/React.createElement("tr", {
-      key: e.id,
-      style: {
-        borderBottom: "1px solid " + C.bd + "08"
-      }
-    }, /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "8px 10px"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        alignItems: "center",
-        gap: 8
-      }
-    }, /*#__PURE__*/React.createElement(Av, {
-      fn: e.fn,
-      ln: e.ln,
-      sz: 24
-    }), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 13,
-        fontWeight: 600,
-        color: C.t1
-      }
-    }, e.fn, " ", e.ln))), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "6px",
-        textAlign: "center",
-        fontFamily: Fm,
-        fontSize: 12,
-        fontWeight: 600,
-        color: bal.vacation > 0 ? C.blue : C.t4
-      }
-    }, bal.vacation, "h"), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "6px",
-        textAlign: "center",
-        fontFamily: Fm,
-        fontSize: 12,
-        fontWeight: 600,
-        color: bal.sick > 0 ? C.orange : C.t4
-      }
-    }, bal.sick, "h"), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "6px",
-        textAlign: "center",
-        fontFamily: Fm,
-        fontSize: 12,
-        fontWeight: 600,
-        color: bal.personal > 0 ? C.purple : C.t4
-      }
-    }, bal.personal, "h"), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "6px",
-        textAlign: "center",
-        fontFamily: Fm,
-        fontSize: 12,
-        fontWeight: 700,
-        color: C.spark
-      }
-    }, totalBal, "h"));
-  })))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginTop: 20,
-      background: C.sf,
-      border: "1px solid " + C.bd,
-      borderRadius: 12,
-      padding: mo ? 12 : 16
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 14,
-      fontWeight: 700,
-      color: C.t1,
-      marginBottom: 10
-    }
-  }, "Recent PTO Activity"), ptoRequests.filter(function (r) {
-    return r.status !== "pending";
-  }).sort(function (a, b) {
-    return new Date(b.created || 0) - new Date(a.created || 0);
-  }).slice(0, 8).map(function (req) {
-    var emp2 = emps.find(function (e) {
-      return e.id === req.eid;
-    });
-    var ptoType = PTO_TYPES.find(function (t) {
-      return t.k === req.ptoType;
-    }) || {
-      l: req.ptoType,
-      c: C.t3
-    };
-    return /*#__PURE__*/React.createElement("div", {
-      key: req.id,
-      style: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "6px 0",
-        borderBottom: "1px solid " + C.bd + "06"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        alignItems: "center",
-        gap: 8
-      }
-    }, /*#__PURE__*/React.createElement(Av, {
-      fn: emp2 ? emp2.fn : "?",
-      ln: emp2 ? emp2.ln : "?",
-      sz: 22
-    }), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 11,
-        fontWeight: 600,
-        color: C.t2
-      }
-    }, emp2 ? emp2.fn + " " + emp2.ln[0] + "." : "?"), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 9,
-        color: C.t4
-      }
-    }, ptoType.l, " \xB7 ", req.hours, "h \xB7 ", new Date(req.startDate).toLocaleDateString()))), /*#__PURE__*/React.createElement(Tag, {
-      color: req.status === "approved" ? C.green : C.red
-    }, req.status.toUpperCase()));
-  }), ptoRequests.filter(function (r) {
-    return r.status !== "pending";
-  }).length === 0 && /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 11,
-      color: C.t4
-    }
-  }, "No PTO history yet"))), mTab === "alerts" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+  }, "Approve All"))), mTab === "alerts" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 13,
       fontWeight: 700,
@@ -4051,7 +4537,7 @@ function ManagerView({
     }
   }, "Alert Center"), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 11,
+      fontSize: 12,
       color: C.t4,
       marginBottom: 16
     }
@@ -4076,7 +4562,7 @@ function ManagerView({
     }
   }, "All Clear"), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 11,
+      fontSize: 12,
       color: C.t4,
       marginTop: 4
     }
@@ -4106,7 +4592,7 @@ function ManagerView({
     return a.sev >= 3;
   }).length), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 10,
+      fontSize: 12,
       color: C.red,
       fontWeight: 600
     }
@@ -4129,7 +4615,7 @@ function ManagerView({
     return a.sev === 2;
   }).length), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 10,
+      fontSize: 12,
       color: C.orange,
       fontWeight: 600
     }
@@ -4152,7 +4638,7 @@ function ManagerView({
     return a.sev <= 1;
   }).length), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 10,
+      fontSize: 12,
       color: C.spark,
       fontWeight: 600
     }
@@ -4202,7 +4688,7 @@ function ManagerView({
       }
     }, a.label)), /*#__PURE__*/React.createElement("div", {
       style: {
-        fontSize: 11,
+        fontSize: 12,
         color: C.t3
       }
     }, a.emp ? a.emp.fn + " " + a.emp.ln + " — " : "", a.detail)), a.emp && /*#__PURE__*/React.createElement("button", {
@@ -4213,7 +4699,7 @@ function ManagerView({
       style: {
         padding: "5px 10px",
         borderRadius: 6,
-        fontSize: 10,
+        fontSize: 12,
         fontWeight: 600,
         color: C.spark,
         background: C.spark + "12",
@@ -4282,7 +4768,7 @@ function ManagerView({
       }
     }, emp2 ? emp2.fn + " " + emp2.ln : "Unknown"), /*#__PURE__*/React.createElement("div", {
       style: {
-        fontSize: 10,
+        fontSize: 12,
         color: C.t4
       }
     }, /*#__PURE__*/React.createElement(Tag, {
@@ -4296,7 +4782,7 @@ function ManagerView({
     }, "\"", req.note, "\""), req.ip && /*#__PURE__*/React.createElement("div", {
       style: {
         fontFamily: Fm,
-        fontSize: 9,
+        fontSize: 12,
         color: C.t4,
         marginTop: 1
       }
@@ -4360,7 +4846,7 @@ function ManagerView({
     }
   }, "Recent Point Events"), recentEvents.length === 0 ? /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 11,
+      fontSize: 12,
       color: C.t4
     }
   }, "No events yet") : recentEvents.map(function (ev) {
@@ -4389,7 +4875,7 @@ function ManagerView({
       }
     }, emp2 ? emp2.fn + " " + emp2.ln : "Unknown"), /*#__PURE__*/React.createElement("div", {
       style: {
-        fontSize: 9,
+        fontSize: 12,
         color: C.t4
       }
     }, rule.v, " \xB7 ", new Date(ev.date).toLocaleDateString())), /*#__PURE__*/React.createElement("span", {
@@ -4410,6 +4896,182 @@ function ManagerView({
 }
 
 /* ═══ ADMIN VIEW ═══ */
+function GeoMap({
+  gc,
+  onUpdate
+}) {
+  var mapRef = useRef(null);
+  var mapInst = useRef(null);
+  var markerRef = useRef(null);
+  var circleRef = useRef(null);
+  var tileRef = useRef(null);
+  var initDone = useRef(false);
+  useEffect(function () {
+    if (!mapRef.current || initDone.current) return;
+    if (typeof window.L === "undefined") {
+      var link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css";
+      document.head.appendChild(link);
+      var scr = document.createElement("script");
+      scr.src = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";
+      scr.onload = function () {
+        initMap();
+      };
+      document.head.appendChild(scr);
+    } else {
+      initMap();
+    }
+    function initMap() {
+      if (initDone.current) return;
+      initDone.current = true;
+      var L = window.L;
+      var map = L.map(mapRef.current, {
+        zoomControl: true,
+        attributionControl: false
+      }).setView([gc.siteLat, gc.siteLng], 15);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19
+      }).addTo(map);
+      tileRef.current = true;
+      var goldIcon = L.divIcon({
+        className: "",
+        html: '<div style="width:28px;height:28px;background:#FACC15;border:3px solid #0D0D0D;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.5)"></div>',
+        iconSize: [28, 28],
+        iconAnchor: [14, 14]
+      });
+      var marker = L.marker([gc.siteLat, gc.siteLng], {
+        draggable: true,
+        icon: goldIcon
+      }).addTo(map);
+      var circle = L.circle([gc.siteLat, gc.siteLng], {
+        radius: gc.geoRadius,
+        color: "#FACC15",
+        fillColor: "#FACC15",
+        fillOpacity: 0.12,
+        weight: 2,
+        dashArray: "6 4"
+      }).addTo(map);
+      function revGeo(lat, lng) {
+        fetch("https://nominatim.openstreetmap.org/reverse?format=json&lat=" + lat + "&lon=" + lng, {
+          headers: {
+            "Accept": "application/json"
+          }
+        }).then(function (r) {
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          return r.json();
+        }).then(function (d) {
+          if (d && d.display_name) onUpdate(Object.assign({}, gc, {
+            siteLat: parseFloat(lat.toFixed(6)),
+            siteLng: parseFloat(lng.toFixed(6)),
+            siteAddress: d.display_name
+          }));
+        }).catch(function (err) {
+          console.log("Reverse geocode unavailable:", err.message);
+        });
+      }
+      marker.on("dragend", function (e) {
+        var ll = e.target.getLatLng();
+        circle.setLatLng(ll);
+        onUpdate(Object.assign({}, gc, {
+          siteLat: parseFloat(ll.lat.toFixed(6)),
+          siteLng: parseFloat(ll.lng.toFixed(6))
+        }));
+        revGeo(ll.lat, ll.lng);
+      });
+      map.on("click", function (e) {
+        marker.setLatLng(e.latlng);
+        circle.setLatLng(e.latlng);
+        onUpdate(Object.assign({}, gc, {
+          siteLat: parseFloat(e.latlng.lat.toFixed(6)),
+          siteLng: parseFloat(e.latlng.lng.toFixed(6))
+        }));
+        revGeo(e.latlng.lat, e.latlng.lng);
+      });
+      mapInst.current = map;
+      markerRef.current = marker;
+      circleRef.current = circle;
+      setTimeout(function () {
+        map.invalidateSize();
+      }, 200);
+    }
+  }, []);
+  useEffect(function () {
+    if (!markerRef.current || !circleRef.current) return;
+    var L = window.L;
+    if (!L) return;
+    markerRef.current.setLatLng([gc.siteLat, gc.siteLng]);
+    if (mapInst.current) {
+      mapInst.current.setView([gc.siteLat, gc.siteLng], 15);
+    }
+    circleRef.current.setLatLng([gc.siteLat, gc.siteLng]);
+    circleRef.current.setRadius(gc.geoRadius);
+  }, [gc.siteLat, gc.siteLng, gc.geoRadius]);
+  return React.createElement("div", {
+    style: {
+      position: "relative"
+    }
+  }, React.createElement("div", {
+    ref: mapRef,
+    style: {
+      width: "100%",
+      height: 320,
+      borderRadius: 10,
+      border: "2px solid " + (gc.enforceGeo ? "#22C55E" : "#1E1E22"),
+      overflow: "hidden"
+    }
+  }), gc.enforceGeo ? React.createElement("div", {
+    style: {
+      position: "absolute",
+      top: 8,
+      right: 8,
+      padding: "4px 10px",
+      borderRadius: 6,
+      background: "#22C55E",
+      fontSize: 11,
+      fontWeight: 700,
+      color: "#0D0D0D",
+      zIndex: 1000
+    }
+  }, "GPS ENFORCED") : React.createElement("div", {
+    style: {
+      position: "absolute",
+      top: 8,
+      right: 8,
+      padding: "4px 10px",
+      borderRadius: 6,
+      background: "#3F3F46",
+      fontSize: 11,
+      fontWeight: 700,
+      color: "#A1A1AA",
+      zIndex: 1000
+    }
+  }, "GPS OFF"), React.createElement("div", {
+    style: {
+      position: "absolute",
+      bottom: 8,
+      left: 8,
+      right: 8,
+      padding: "6px 10px",
+      borderRadius: 6,
+      background: "rgba(13,13,11,0.9)",
+      zIndex: 1000
+    }
+  }, React.createElement("div", {
+    style: {
+      fontSize: 11,
+      fontWeight: 600,
+      color: "#FACC15",
+      marginBottom: 2
+    }
+  }, gc.siteAddress || "Click map to set location"), React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: "#A1A1AA",
+      fontFamily: Fm
+    }
+  }, gc.siteLat.toFixed(4) + "°, " + gc.siteLng.toFixed(4) + "° · " + gc.geoRadius + "m radius")));
+}
 function AdminView({
   emps,
   punches,
@@ -4419,17 +5081,16 @@ function AdminView({
   onClearData,
   policy,
   onUpdatePolicy,
-  ptoPolicy,
-  onUpdatePtoPolicy,
   geoConfig,
   onUpdateGeo,
-  ptoRequests,
   requests,
-  onLogout
+  onLogout,
+  staffName,
+  staff,
+  onUpdateStaff
 }) {
   var mo = useMobile();
   var P = policy || DEFAULT_POLICY;
-  var PP = ptoPolicy || DEFAULT_PTO_POLICY;
   var GC = geoConfig || DEFAULT_GEO;
   var r1 = useState("employees"),
     tab = r1[0],
@@ -4459,6 +5120,80 @@ function AdminView({
   var rnip = useState(""),
     newIP = rnip[0],
     setNewIP = rnip[1];
+  var rShowAddStaff = useState(false),
+    showAddStaff = rShowAddStaff[0],
+    setShowAddStaff = rShowAddStaff[1];
+  var rStaffForm = useState({
+      fn: "",
+      ln: "",
+      pin: "",
+      role: "manager"
+    }),
+    staffForm = rStaffForm[0],
+    setStaffForm = rStaffForm[1];
+  function addStaffMember() {
+    if (!staffForm.fn || !staffForm.pin || staffForm.pin.length !== 4) return;
+    var ns = staff.concat([{
+      id: "S" + String(staff.length + 1).padStart(3, "0"),
+      fn: staffForm.fn,
+      ln: staffForm.ln,
+      pin: staffForm.pin,
+      role: staffForm.role
+    }]);
+    onUpdateStaff(ns);
+    setStaffForm({
+      fn: "",
+      ln: "",
+      pin: "",
+      role: "manager"
+    });
+    setShowAddStaff(false);
+  }
+  function removeStaffMember(id) {
+    var ns = staff.filter(function (s) {
+      return s.id !== id;
+    });
+    onUpdateStaff(ns);
+  }
+  var raddrS = useState(""),
+    addrSearch = raddrS[0],
+    setAddrSearch = raddrS[1];
+  var raddrR = useState([]),
+    addrResults = raddrR[0],
+    setAddrResults = raddrR[1];
+  var raddrL = useState(false),
+    addrLoading = raddrL[0],
+    setAddrLoading = raddrL[1];
+  var raddrE = useState(""),
+    addrError = raddrE[0],
+    setAddrError = raddrE[1];
+  function searchAddr() {
+    if (!addrSearch.trim()) return;
+    setAddrLoading(true);
+    setAddrError("");
+    setAddrResults([]);
+    geocodeAddress(addrSearch).then(function (r) {
+      setAddrLoading(false);
+      if (r.length === 0) {
+        setAddrError("No results found. Try a more specific address.");
+      } else {
+        setAddrResults(r);
+      }
+    }).catch(function () {
+      setAddrLoading(false);
+      setAddrError("Search failed. Use the map to set your location instead.");
+    });
+  }
+  function pickAddr(r) {
+    onUpdateGeo(Object.assign({}, GC, {
+      siteLat: r.lat,
+      siteLng: r.lng,
+      siteAddress: r.display
+    }));
+    setAddrResults([]);
+    setAddrSearch("");
+    setAddrError("");
+  }
   function genPin() {
     var p;
     do {
@@ -4492,12 +5227,7 @@ function AdminView({
       workDays: form.workDays,
       rate: parseFloat(form.rate) || 16.50,
       st: "active",
-      pts: 0,
-      ptoBalances: {
-        vacation: 40,
-        sick: 24,
-        personal: 16
-      }
+      pts: 0
     };
     onUpdateEmps(emps.concat([ne]));
     setForm({
@@ -4587,14 +5317,14 @@ function AdminView({
       a2.click();
     }
     if (type === "audit") {
-      var rows3 = ["Employee,Badge,Type,Time,Device,IP"];
+      var rows3 = ["Employee,Badge,Type,Time,Device,IP,Lat,Lng,Distance"];
       punches.slice().sort(function (a, b) {
         return new Date(b.time) - new Date(a.time);
       }).forEach(function (p) {
         var emp = emps.find(function (e) {
           return e.id === p.eid;
         });
-        rows3.push((emp ? emp.fn + " " + emp.ln : "?") + "," + (emp ? emp.badge : "?") + "," + p.type + "," + new Date(p.time).toLocaleString() + "," + (p.dev || "") + "," + (p.ip || ""));
+        rows3.push((emp ? emp.fn + " " + emp.ln : "?") + "," + (emp ? emp.badge : "?") + "," + p.type + "," + new Date(p.time).toLocaleString() + "," + (p.dev || "") + "," + (p.ip || "") + "," + (p.lat || "") + "," + (p.lng || "") + "," + (p.dist != null ? p.dist : ""));
       });
       var blob3 = new Blob([rows3.join("\n")], {
         type: "text/csv"
@@ -4605,35 +5335,13 @@ function AdminView({
       a3.download = "audit-trail.csv";
       a3.click();
     }
-    if (type === "pto") {
-      var rows4 = ["Employee,Badge,Type,Hours,Start,End,Status"];
-      (ptoRequests || []).forEach(function (r) {
-        var emp = emps.find(function (e) {
-          return e.id === r.eid;
-        });
-        var pt = PTO_TYPES.find(function (t) {
-          return t.k === r.ptoType;
-        }) || {
-          l: r.ptoType
-        };
-        rows4.push((emp ? emp.fn + " " + emp.ln : "?") + "," + (emp ? emp.badge : "?") + "," + pt.l + "," + r.hours + "," + new Date(r.startDate).toLocaleDateString() + "," + new Date(r.endDate).toLocaleDateString() + "," + r.status);
-      });
-      var blob4 = new Blob([rows4.join("\n")], {
-        type: "text/csv"
-      });
-      var url4 = URL.createObjectURL(blob4);
-      var a4 = document.createElement("a");
-      a4.href = url4;
-      a4.download = "pto-report.csv";
-      a4.click();
-    }
   }
   function upPolicy(key, val) {
     var np = Object.assign({}, P);
     np[key] = val;
     onUpdatePolicy(np);
   }
-  var tabDef2 = [["system", "System"], ["employees", "Employees"], ["schedules", "Schedules"], ["policy", "Policy"], ["pto-config", "PTO Rules"], ["geofence", "Geofence"], ["reports", "Reports"], ["audit", "Audit Log"]];
+  var tabDef2 = [["system", "System"], ["employees", "Employees"], ["staff", "Staff Access"], ["schedules", "Schedules"], ["policy", "Policy"], ["geofence", "Geofence"], ["reports", "Reports"], ["audit", "Audit Log"]];
   return /*#__PURE__*/React.createElement("div", {
     style: {
       minHeight: "100vh",
@@ -4643,7 +5351,8 @@ function AdminView({
   }, /*#__PURE__*/React.createElement(Header, {
     title: "Administration",
     sub: "System Configuration",
-    onLogout: onLogout
+    onLogout: onLogout,
+    staffName: staffName
   }), /*#__PURE__*/React.createElement("div", {
     style: {
       padding: mo ? 12 : 28
@@ -4712,14 +5421,6 @@ function AdminView({
     sub: P.rollingDays + "-day window",
     color: C.orange,
     icon: "\uD83D\uDCCA"
-  }), /*#__PURE__*/React.createElement(StatCard, {
-    label: "PTO REQUESTS",
-    value: (ptoRequests || []).length,
-    sub: (ptoRequests || []).filter(function (r) {
-      return r.status === "pending";
-    }).length + " pending",
-    color: C.purple,
-    icon: "\uD83C\uDFD6"
   })), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "grid",
@@ -4751,7 +5452,7 @@ function AdminView({
       }
     }, /*#__PURE__*/React.createElement("span", {
       style: {
-        fontSize: 11,
+        fontSize: 12,
         color: C.t3
       }
     }, r[0]), /*#__PURE__*/React.createElement("span", {
@@ -4803,7 +5504,7 @@ function AdminView({
     }, d), /*#__PURE__*/React.createElement("span", {
       style: {
         fontFamily: Fm,
-        fontSize: 10,
+        fontSize: 12,
         color: C.spark
       }
     }, count, " (", pct, "%)")), /*#__PURE__*/React.createElement("div", {
@@ -4838,13 +5539,13 @@ function AdminView({
     }
   }, "Danger Zone"), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 11,
+      fontSize: 12,
       color: C.t3,
       marginBottom: 10
     }
   }, "These actions cannot be undone"), /*#__PURE__*/React.createElement("button", {
     onClick: function () {
-      if (window.confirm("Clear ALL data? This resets employees, punches, points, and PTO.")) onClearData();
+      if (window.confirm("Clear ALL data? This resets employees, punches, and points.")) onClearData();
     },
     style: {
       padding: "8px 16px",
@@ -4896,7 +5597,7 @@ function AdminView({
     }
   }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
     style: {
-      fontSize: 9,
+      fontSize: 12,
       fontWeight: 600,
       color: C.t4,
       fontFamily: Fb,
@@ -4916,7 +5617,7 @@ function AdminView({
     style: inp
   })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
     style: {
-      fontSize: 9,
+      fontSize: 12,
       fontWeight: 600,
       color: C.t4,
       fontFamily: Fb,
@@ -4936,7 +5637,7 @@ function AdminView({
     style: inp
   })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
     style: {
-      fontSize: 9,
+      fontSize: 12,
       fontWeight: 600,
       color: C.t4,
       fontFamily: Fb,
@@ -4957,7 +5658,7 @@ function AdminView({
     style: inp
   })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
     style: {
-      fontSize: 9,
+      fontSize: 12,
       fontWeight: 600,
       color: C.t4,
       fontFamily: Fb,
@@ -4979,7 +5680,7 @@ function AdminView({
     maxLength: 4
   })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
     style: {
-      fontSize: 9,
+      fontSize: 12,
       fontWeight: 600,
       color: C.t4,
       fontFamily: Fb,
@@ -5005,7 +5706,7 @@ function AdminView({
     }, d);
   }))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
     style: {
-      fontSize: 9,
+      fontSize: 12,
       fontWeight: 600,
       color: C.t4,
       fontFamily: Fb,
@@ -5026,7 +5727,7 @@ function AdminView({
     style: inp
   })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
     style: {
-      fontSize: 9,
+      fontSize: 12,
       fontWeight: 600,
       color: C.t4,
       fontFamily: Fb,
@@ -5093,7 +5794,7 @@ function AdminView({
       }
     }, e.fn, " ", e.ln), /*#__PURE__*/React.createElement("div", {
       style: {
-        fontSize: 10,
+        fontSize: 12,
         color: C.t4
       }
     }, e.badge, " \xB7 ", e.dept, " \xB7 ", e.shiftStart || "06:00", "\u2013", e.shiftEnd || "14:30"))), /*#__PURE__*/React.createElement("button", {
@@ -5219,7 +5920,7 @@ function AdminView({
         padding: "8px 12px",
         textAlign: "left",
         fontFamily: Fb,
-        fontSize: 11,
+        fontSize: 12,
         fontWeight: 600,
         color: C.t4,
         letterSpacing: 1.5,
@@ -5392,7 +6093,295 @@ function AdminView({
         border: "1px solid " + C.bd
       }
     }, "Reset")));
-  })))))), tab === "schedules" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+  })))))), tab === "staff" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 12
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 15,
+      fontWeight: 700,
+      color: C.t1
+    }
+  }, "Manager & Admin Accounts"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: C.t4,
+      marginTop: 2
+    }
+  }, "Each staff member gets their own PIN to access Manager or Admin panels")), /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      setShowAddStaff(true);
+    },
+    style: {
+      padding: "8px 16px",
+      borderRadius: 8,
+      fontSize: 13,
+      fontWeight: 700,
+      color: C.bg,
+      background: C.spark
+    }
+  }, "+ Add Staff")), showAddStaff && /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: C.sf,
+      border: "1px solid " + C.spark + "44",
+      borderRadius: 12,
+      padding: 16,
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 13,
+      fontWeight: 700,
+      color: C.spark,
+      marginBottom: 12
+    }
+  }, "New Staff Member"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "grid",
+      gridTemplateColumns: mo ? "1fr" : "1fr 1fr 1fr 1fr",
+      gap: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: C.t4,
+      marginBottom: 4
+    }
+  }, "First Name"), /*#__PURE__*/React.createElement("input", {
+    value: staffForm.fn,
+    onChange: function (e) {
+      setStaffForm(Object.assign({}, staffForm, {
+        fn: e.target.value
+      }));
+    },
+    style: {
+      width: "100%",
+      background: C.bg,
+      border: "1px solid " + C.bd,
+      color: C.t1,
+      padding: "8px 10px",
+      borderRadius: 6,
+      fontSize: 13,
+      outline: "none"
+    }
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: C.t4,
+      marginBottom: 4
+    }
+  }, "Last Name"), /*#__PURE__*/React.createElement("input", {
+    value: staffForm.ln,
+    onChange: function (e) {
+      setStaffForm(Object.assign({}, staffForm, {
+        ln: e.target.value
+      }));
+    },
+    style: {
+      width: "100%",
+      background: C.bg,
+      border: "1px solid " + C.bd,
+      color: C.t1,
+      padding: "8px 10px",
+      borderRadius: 6,
+      fontSize: 13,
+      outline: "none"
+    }
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: C.t4,
+      marginBottom: 4
+    }
+  }, "4-Digit PIN"), /*#__PURE__*/React.createElement("input", {
+    value: staffForm.pin,
+    maxLength: 4,
+    onChange: function (e) {
+      setStaffForm(Object.assign({}, staffForm, {
+        pin: e.target.value.replace(/\D/g, "")
+      }));
+    },
+    style: {
+      width: "100%",
+      background: C.bg,
+      border: "1px solid " + C.bd,
+      color: C.spark,
+      padding: "8px 10px",
+      borderRadius: 6,
+      fontSize: 13,
+      fontFamily: Fm,
+      fontWeight: 700,
+      outline: "none",
+      letterSpacing: 4
+    }
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: C.t4,
+      marginBottom: 4
+    }
+  }, "Role"), /*#__PURE__*/React.createElement("select", {
+    value: staffForm.role,
+    onChange: function (e) {
+      setStaffForm(Object.assign({}, staffForm, {
+        role: e.target.value
+      }));
+    },
+    style: {
+      width: "100%",
+      background: C.bg,
+      border: "1px solid " + C.bd,
+      color: C.t1,
+      padding: "8px 10px",
+      borderRadius: 6,
+      fontSize: 13,
+      outline: "none",
+      appearance: "none"
+    }
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "manager"
+  }, "Manager"), /*#__PURE__*/React.createElement("option", {
+    value: "admin"
+  }, "Admin")))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 8,
+      marginTop: 12
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: addStaffMember,
+    style: {
+      padding: "8px 20px",
+      borderRadius: 8,
+      fontSize: 13,
+      fontWeight: 700,
+      color: C.bg,
+      background: C.green
+    }
+  }, "Save"), /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      setShowAddStaff(false);
+    },
+    style: {
+      padding: "8px 20px",
+      borderRadius: 8,
+      fontSize: 13,
+      fontWeight: 600,
+      color: C.t3,
+      background: C.bg,
+      border: "1px solid " + C.bd
+    }
+  }, "Cancel"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: C.sf,
+      border: "1px solid " + C.bd,
+      borderRadius: 12,
+      overflow: "hidden"
+    }
+  }, /*#__PURE__*/React.createElement("table", {
+    style: {
+      width: "100%",
+      borderCollapse: "collapse"
+    }
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, ["Name", "PIN", "Role", ""].map(function (h) {
+    return /*#__PURE__*/React.createElement("th", {
+      key: h,
+      style: {
+        padding: "10px 14px",
+        textAlign: "left",
+        fontSize: 12,
+        fontWeight: 600,
+        color: C.t4,
+        borderBottom: "1px solid " + C.bd,
+        fontFamily: Fb
+      }
+    }, h);
+  }))), /*#__PURE__*/React.createElement("tbody", null, (staff || []).map(function (s) {
+    return /*#__PURE__*/React.createElement("tr", {
+      key: s.id,
+      style: {
+        borderBottom: "1px solid " + C.bd + "08"
+      }
+    }, /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: "10px 14px"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 8
+      }
+    }, /*#__PURE__*/React.createElement(Av, {
+      fn: s.fn,
+      ln: s.ln,
+      sz: 30
+    }), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 14,
+        fontWeight: 600,
+        color: C.t1
+      }
+    }, s.fn, " ", s.ln))), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: "10px 14px"
+      }
+    }, /*#__PURE__*/React.createElement("code", {
+      style: {
+        fontFamily: Fm,
+        fontSize: 14,
+        color: C.spark,
+        fontWeight: 700,
+        letterSpacing: 3
+      }
+    }, s.pin)), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: "10px 14px"
+      }
+    }, /*#__PURE__*/React.createElement(Tag, {
+      color: s.role === "admin" ? C.red : C.blue
+    }, s.role.toUpperCase())), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: "10px 14px",
+        textAlign: "right"
+      }
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: function () {
+        if (window.confirm("Remove " + s.fn + " " + s.ln + "?")) removeStaffMember(s.id);
+      },
+      style: {
+        fontSize: 12,
+        color: C.red,
+        background: "none",
+        border: "none",
+        fontWeight: 600
+      }
+    }, "Remove")));
+  })))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 12,
+      padding: 12,
+      background: C.bg,
+      borderRadius: 8,
+      border: "1px solid " + C.bd
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      fontWeight: 600,
+      color: C.t2,
+      marginBottom: 4
+    }
+  }, "How Staff Login Works"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: C.t4
+    }
+  }, "Staff tap the \u2699 gear icon on the kiosk screen, then enter their personal PIN. Managers see the Manager Dashboard. Admins see this Administration panel. Each person has their own PIN \u2014 no shared codes."))), tab === "schedules" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 13,
       fontWeight: 700,
@@ -5401,7 +6390,7 @@ function AdminView({
     }
   }, "Shift Schedule Manager"), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 11,
+      fontSize: 12,
       color: C.t4,
       marginBottom: 14
     }
@@ -5439,7 +6428,7 @@ function AdminView({
     }, s.start, " \u2013 ", s.end)), /*#__PURE__*/React.createElement("div", {
       style: {
         fontFamily: Fm,
-        fontSize: 10,
+        fontSize: 12,
         color: C.t4
       }
     }, emps.filter(function (e) {
@@ -5469,7 +6458,7 @@ function AdminView({
         padding: "8px 8px",
         textAlign: "center",
         fontFamily: Fb,
-        fontSize: 9,
+        fontSize: 12,
         fontWeight: 600,
         color: C.t4,
         letterSpacing: 1,
@@ -5526,7 +6515,7 @@ function AdminView({
       style: {
         padding: "8px 6px",
         textAlign: "center",
-        fontSize: 10,
+        fontSize: 12,
         color: C.t3
       }
     }, e.dept), /*#__PURE__*/React.createElement("td", {
@@ -5545,7 +6534,7 @@ function AdminView({
         border: "1px solid " + C.bd,
         color: C.spark,
         fontFamily: Fm,
-        fontSize: 10,
+        fontSize: 12,
         padding: "3px 4px",
         borderRadius: 5,
         width: 70,
@@ -5568,7 +6557,7 @@ function AdminView({
         border: "1px solid " + C.bd,
         color: C.spark,
         fontFamily: Fm,
-        fontSize: 10,
+        fontSize: 12,
         padding: "3px 4px",
         borderRadius: 5,
         width: 70,
@@ -5608,7 +6597,7 @@ function AdminView({
     }
   }, "Policy Configuration"), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 11,
+      fontSize: 12,
       color: C.t4,
       marginBottom: 16
     }
@@ -5817,7 +6806,7 @@ function AdminView({
     return /*#__PURE__*/React.createElement("div", {
       key: t.r,
       style: {
-        fontSize: 10,
+        fontSize: 12,
         color: C.t4,
         marginTop: 4
       }
@@ -5828,139 +6817,7 @@ function AdminView({
         color: t.c
       }
     }, t.r), " \u2014 ", t.l);
-  })))), tab === "pto-config" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 13,
-      fontWeight: 700,
-      color: C.t1,
-      marginBottom: 4
-    }
-  }, "PTO Accrual Configuration"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 11,
-      color: C.t4,
-      marginBottom: 16
-    }
-  }, "Set accrual rates, caps, and carryover for each PTO type"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "grid",
-      gridTemplateColumns: mo ? "1fr" : "1fr 1fr 1fr",
-      gap: 12
-    }
-  }, PTO_TYPES.filter(function (t) {
-    return t.k !== "unpaid";
-  }).map(function (pt) {
-    var cfg = PP[pt.k] || {
-      accrualRate: 0,
-      accrualPeriod: "biweekly",
-      maxBalance: 0,
-      carryoverMax: 0
-    };
-    return /*#__PURE__*/React.createElement("div", {
-      key: pt.k,
-      style: {
-        background: C.sf,
-        border: "1px solid " + pt.c + "33",
-        borderRadius: 12,
-        padding: mo ? 14 : 20
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        alignItems: "center",
-        gap: 8,
-        marginBottom: 14
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 18
-      }
-    }, pt.icon), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 13,
-        fontWeight: 700,
-        color: pt.c
-      }
-    }, pt.l)), [["accrualRate", "Accrual Rate (hrs/period)", 0.5, 10], ["maxBalance", "Max Balance (hrs)", 0, 200], ["carryoverMax", "Carryover Max (hrs)", 0, 200]].map(function (f) {
-      return /*#__PURE__*/React.createElement("div", {
-        key: f[0],
-        style: {
-          marginBottom: 10
-        }
-      }, /*#__PURE__*/React.createElement("div", {
-        style: {
-          fontSize: 10,
-          color: C.t4,
-          fontFamily: Fm,
-          letterSpacing: 1,
-          marginBottom: 3
-        }
-      }, f[1]), /*#__PURE__*/React.createElement("input", {
-        type: "number",
-        value: cfg[f[0]] || 0,
-        min: f[2],
-        max: f[3],
-        step: f[0] === "accrualRate" ? 0.01 : 1,
-        onChange: function (e) {
-          var nc = Object.assign({}, PP);
-          nc[pt.k] = Object.assign({}, cfg);
-          nc[pt.k][f[0]] = parseFloat(e.target.value) || 0;
-          onUpdatePtoPolicy(nc);
-        },
-        style: {
-          width: "100%",
-          background: C.bg,
-          border: "1px solid " + C.bd,
-          color: C.spark,
-          fontFamily: Fm,
-          fontSize: 12,
-          fontWeight: 700,
-          padding: "8px 10px",
-          borderRadius: 6,
-          outline: "none"
-        }
-      }));
-    }), /*#__PURE__*/React.createElement("div", {
-      style: {
-        marginBottom: 4
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 10,
-        color: C.t4,
-        fontFamily: Fm,
-        letterSpacing: 1,
-        marginBottom: 3
-      }
-    }, "ACCRUAL PERIOD"), /*#__PURE__*/React.createElement("select", {
-      value: cfg.accrualPeriod || "biweekly",
-      onChange: function (e) {
-        var nc = Object.assign({}, PP);
-        nc[pt.k] = Object.assign({}, cfg, {
-          accrualPeriod: e.target.value
-        });
-        onUpdatePtoPolicy(nc);
-      },
-      style: {
-        width: "100%",
-        background: C.bg,
-        border: "1px solid " + C.bd,
-        color: C.spark,
-        fontFamily: Fm,
-        fontSize: 12,
-        padding: "8px 10px",
-        borderRadius: 6,
-        outline: "none",
-        appearance: "none"
-      }
-    }, /*#__PURE__*/React.createElement("option", {
-      value: "weekly"
-    }, "Weekly"), /*#__PURE__*/React.createElement("option", {
-      value: "biweekly"
-    }, "Biweekly"), /*#__PURE__*/React.createElement("option", {
-      value: "monthly"
-    }, "Monthly"))));
-  }))), tab === "geofence" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+  })))), tab === "geofence" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 13,
       fontWeight: 700,
@@ -5969,17 +6826,282 @@ function AdminView({
     }
   }, "Geofence & IP Restrictions"), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 11,
+      fontSize: 12,
       color: C.t4,
       marginBottom: 16
     }
-  }, "Control where employees can punch in from"), /*#__PURE__*/React.createElement("div", {
+  }, "Click the map or drag the pin to set the site center. Adjust the radius with the slider."), /*#__PURE__*/React.createElement(GeoMap, {
+    gc: GC,
+    onUpdate: onUpdateGeo
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 14,
+      display: "flex",
+      alignItems: "center",
+      gap: 12,
+      flexWrap: "wrap"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      minWidth: 200
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      marginBottom: 4
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 12,
+      color: C.t3
+    }
+  }, "Geofence Radius"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: Fm,
+      fontSize: 12,
+      fontWeight: 700,
+      color: C.spark
+    }
+  }, GC.geoRadius, "m")), /*#__PURE__*/React.createElement("input", {
+    type: "range",
+    min: 50,
+    max: 5000,
+    step: 50,
+    value: GC.geoRadius,
+    onChange: function (e) {
+      onUpdateGeo(Object.assign({}, GC, {
+        geoRadius: parseInt(e.target.value)
+      }));
+    },
+    style: {
+      width: "100%",
+      accentColor: "#FACC15",
+      height: 6
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      marginTop: 2
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 12,
+      color: C.t4
+    }
+  }, "50m"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 12,
+      color: C.t4
+    }
+  }, "5km"))), /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      onUpdateGeo(Object.assign({}, GC, {
+        enforceGeo: !GC.enforceGeo
+      }));
+    },
+    style: {
+      padding: "10px 20px",
+      borderRadius: 8,
+      fontSize: 13,
+      fontWeight: 700,
+      color: GC.enforceGeo ? C.bg : C.t3,
+      background: GC.enforceGeo ? C.green : C.bg,
+      border: "2px solid " + (GC.enforceGeo ? C.green : C.bd)
+    }
+  }, GC.enforceGeo ? "GPS ENFORCED" : "ENABLE GPS"), /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (pos) {
+          var lat = parseFloat(pos.coords.latitude.toFixed(6));
+          var lng = parseFloat(pos.coords.longitude.toFixed(6));
+          onUpdateGeo(Object.assign({}, GC, {
+            siteLat: lat,
+            siteLng: lng
+          }));
+          fetch("https://nominatim.openstreetmap.org/reverse?format=json&lat=" + lat + "&lon=" + lng).then(function (r) {
+            return r.json();
+          }).then(function (d) {
+            if (d && d.display_name) onUpdateGeo(Object.assign({}, GC, {
+              siteLat: lat,
+              siteLng: lng,
+              siteAddress: d.display_name
+            }));
+          }).catch(function () {});
+        }, function () {
+          alert("Could not get your location");
+        });
+      }
+    },
+    style: {
+      padding: "10px 16px",
+      borderRadius: 8,
+      fontSize: 12,
+      fontWeight: 700,
+      color: C.blue,
+      background: C.blueD,
+      border: "1px solid " + C.blueB
+    }
+  }, "Use My Location")), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "grid",
       gridTemplateColumns: mo ? "1fr" : "1fr 1fr",
-      gap: 12
+      gap: 12,
+      marginTop: 16
     }
   }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: C.sf,
+      border: "1px solid " + C.bd,
+      borderRadius: 12,
+      padding: mo ? 14 : 20
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 13,
+      fontWeight: 700,
+      color: C.t1,
+      marginBottom: 10
+    }
+  }, "Site Address"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: C.t4,
+      marginBottom: 8
+    }
+  }, GC.siteAddress || "No address set"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 4,
+      marginBottom: 6
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    value: addrSearch,
+    onChange: function (e) {
+      setAddrSearch(e.target.value);
+      setAddrError("");
+    },
+    onKeyDown: function (e) {
+      if (e.key === "Enter") searchAddr();
+    },
+    placeholder: "Enter address, city, or place name...",
+    style: {
+      flex: 1,
+      background: C.bg,
+      border: "1px solid " + C.bd,
+      color: C.t1,
+      padding: "8px 10px",
+      borderRadius: 6,
+      fontSize: 12,
+      outline: "none"
+    }
+  }), /*#__PURE__*/React.createElement("button", {
+    onClick: searchAddr,
+    disabled: addrLoading,
+    style: {
+      padding: "8px 14px",
+      borderRadius: 6,
+      fontSize: 12,
+      fontWeight: 700,
+      color: C.bg,
+      background: addrLoading ? C.t4 : C.spark,
+      opacity: addrLoading ? 0.6 : 1
+    }
+  }, addrLoading ? "Searching..." : "Search")), addrError && /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: C.orange,
+      marginBottom: 6,
+      padding: "6px 8px",
+      background: C.bg,
+      borderRadius: 6,
+      border: "1px solid " + C.bd
+    }
+  }, addrError), addrResults.length > 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: C.bg,
+      border: "1px solid " + C.spark + "44",
+      borderRadius: 8,
+      maxHeight: 200,
+      overflowY: "auto",
+      marginBottom: 8
+    }
+  }, addrResults.map(function (r, i) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: i,
+      onClick: function () {
+        pickAddr(r);
+      },
+      style: {
+        padding: "10px 12px",
+        fontSize: 12,
+        color: C.t1,
+        cursor: "pointer",
+        borderBottom: i < addrResults.length - 1 ? "1px solid " + C.bd : "none",
+        transition: "background 0.15s"
+      },
+      onMouseEnter: function (e) {
+        e.currentTarget.style.background = C.spark + "12";
+      },
+      onMouseLeave: function (e) {
+        e.currentTarget.style.background = "transparent";
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontWeight: 600,
+        marginBottom: 2
+      }
+    }, r.display.split(",").slice(0, 2).join(",")), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: C.t4
+      }
+    }, r.display));
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 8,
+      marginTop: 4
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: C.t4,
+      fontFamily: Fm,
+      letterSpacing: 1
+    }
+  }, "LAT"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: Fm,
+      fontSize: 12,
+      fontWeight: 700,
+      color: C.spark
+    }
+  }, GC.siteLat.toFixed(6))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: C.t4,
+      fontFamily: Fm,
+      letterSpacing: 1
+    }
+  }, "LNG"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: Fm,
+      fontSize: 12,
+      fontWeight: 700,
+      color: C.spark
+    }
+  }, GC.siteLng.toFixed(6))))), /*#__PURE__*/React.createElement("div", {
     style: {
       background: C.sf,
       border: "1px solid " + C.bd,
@@ -5991,15 +7113,15 @@ function AdminView({
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
-      marginBottom: 14
+      marginBottom: 10
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 14,
+      fontSize: 13,
       fontWeight: 700,
       color: C.t1
     }
-  }, "IP Address Whitelist"), /*#__PURE__*/React.createElement("button", {
+  }, "IP Whitelist"), /*#__PURE__*/React.createElement("button", {
     onClick: function () {
       onUpdateGeo(Object.assign({}, GC, {
         enforceIP: !GC.enforceIP
@@ -6014,13 +7136,7 @@ function AdminView({
       background: GC.enforceIP ? C.green : C.bg,
       border: "1px solid " + (GC.enforceIP ? C.green : C.bd)
     }
-  }, GC.enforceIP ? "ENFORCED" : "DISABLED")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 10,
-      color: C.t3,
-      marginBottom: 10
-    }
-  }, "Only allow punches from these IP addresses"), GC.allowedIPs.map(function (ip, i) {
+  }, GC.enforceIP ? "ENFORCED" : "DISABLED")), GC.allowedIPs.map(function (ip, i) {
     return /*#__PURE__*/React.createElement("div", {
       key: i,
       style: {
@@ -6036,7 +7152,7 @@ function AdminView({
     }, /*#__PURE__*/React.createElement("code", {
       style: {
         fontFamily: Fm,
-        fontSize: 11,
+        fontSize: 12,
         color: C.spark
       }
     }, ip), /*#__PURE__*/React.createElement("button", {
@@ -6049,7 +7165,7 @@ function AdminView({
         }));
       },
       style: {
-        fontSize: 10,
+        fontSize: 11,
         color: C.red,
         background: "none",
         border: "none"
@@ -6066,7 +7182,7 @@ function AdminView({
     onChange: function (e) {
       setNewIP(e.target.value);
     },
-    placeholder: "e.g. 192.168.1.0",
+    placeholder: "e.g. " + getIP(),
     style: {
       flex: 1,
       background: C.bg,
@@ -6074,7 +7190,7 @@ function AdminView({
       color: C.t1,
       padding: "7px 10px",
       borderRadius: 6,
-      fontSize: 11,
+      fontSize: 12,
       fontFamily: Fm,
       outline: "none"
     }
@@ -6095,126 +7211,33 @@ function AdminView({
       color: C.bg,
       background: C.spark
     }
-  }, "Add")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 10,
-      color: C.t4,
-      marginTop: 8
-    }
-  }, "Current device IP: ", /*#__PURE__*/React.createElement("code", {
-    style: {
-      color: C.spark
-    }
-  }, getIP()))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.sf,
-      border: "1px solid " + C.bd,
-      borderRadius: 12,
-      padding: mo ? 14 : 20
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: 14
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 14,
-      fontWeight: 700,
-      color: C.t1
-    }
-  }, "Geofencing"), /*#__PURE__*/React.createElement("button", {
+  }, "Add")), /*#__PURE__*/React.createElement("button", {
     onClick: function () {
-      onUpdateGeo(Object.assign({}, GC, {
-        enforceGeo: !GC.enforceGeo
-      }));
+      var cur = getIP();
+      if (cur && cur !== "unknown" && cur !== "browser-blocked" && !GC.allowedIPs.includes(cur)) {
+        onUpdateGeo(Object.assign({}, GC, {
+          allowedIPs: GC.allowedIPs.concat([cur])
+        }));
+      }
     },
     style: {
-      padding: "5px 12px",
+      marginTop: 6,
+      padding: "6px 12px",
       borderRadius: 6,
-      fontSize: 12,
-      fontWeight: 700,
-      color: GC.enforceGeo ? C.bg : C.t3,
-      background: GC.enforceGeo ? C.green : C.bg,
-      border: "1px solid " + (GC.enforceGeo ? C.green : C.bd)
+      fontSize: 11,
+      fontWeight: 600,
+      color: C.blue,
+      background: C.blueD,
+      border: "1px solid " + C.blueB,
+      width: "100%"
     }
-  }, GC.enforceGeo ? "ENFORCED" : "DISABLED")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 10,
-      color: C.t3,
-      marginBottom: 12
-    }
-  }, "Restrict punches to within a radius of the job site"), [["siteLat", "Site Latitude"], ["siteLng", "Site Longitude"], ["geoRadius", "Radius (meters)"]].map(function (f) {
-    return /*#__PURE__*/React.createElement("div", {
-      key: f[0],
-      style: {
-        marginBottom: 10
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 10,
-        color: C.t4,
-        fontFamily: Fm,
-        letterSpacing: 1,
-        marginBottom: 3
-      }
-    }, f[1]), /*#__PURE__*/React.createElement("input", {
-      type: "number",
-      step: f[0] === "geoRadius" ? 50 : 0.0001,
-      value: GC[f[0]],
-      onChange: function (e) {
-        var ng = Object.assign({}, GC);
-        ng[f[0]] = parseFloat(e.target.value) || 0;
-        onUpdateGeo(ng);
-      },
-      style: {
-        width: "100%",
-        background: C.bg,
-        border: "1px solid " + C.bd,
-        color: C.spark,
-        fontFamily: Fm,
-        fontSize: 12,
-        fontWeight: 700,
-        padding: "8px 10px",
-        borderRadius: 6,
-        outline: "none"
-      }
-    }));
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginTop: 8,
-      padding: 10,
-      background: C.bg,
-      borderRadius: 8,
-      border: "1px solid " + C.bd
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: Fm,
-      fontSize: 10,
-      color: C.t4
-    }
-  }, "Site: DFM Marshall Plant"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: Fm,
-      fontSize: 10,
-      color: C.spark
-    }
-  }, GC.siteLat.toFixed(4), "\xB0N, ", Math.abs(GC.siteLng).toFixed(4), "\xB0W"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: Fm,
-      fontSize: 10,
-      color: C.t4
-    }
-  }, "Radius: ", GC.geoRadius, "m"))))), tab === "reports" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+  }, "+ Add Current IP (", getIP(), ")")))), tab === "reports" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     style: {
       display: "grid",
       gridTemplateColumns: mo ? "1fr" : "repeat(2,1fr)",
       gap: mo ? 8 : 12
     }
-  }, [["Weekly Timesheet", "Mon–Sun hours by employee with OT breakdown", "timesheet", "📊"], ["Points Report", "90-day attendance violation history", "points", "⚠"], ["Audit Trail", "Every punch with badge, time, device, IP", "audit", "🔍"], ["PTO Report", "Time-off requests with status and hours", "pto", "🏖"]].map(function (x) {
+  }, [["Weekly Timesheet", "Mon–Sun hours by employee with OT breakdown", "timesheet", "📊"], ["Points Report", "90-day attendance violation history", "points", "⚠"], ["Audit Trail", "Every punch with badge, time, device, IP", "audit", "🔍"]].map(function (x) {
     return /*#__PURE__*/React.createElement("div", {
       key: x[0],
       style: {
@@ -6242,7 +7265,7 @@ function AdminView({
       }
     }, x[0])), /*#__PURE__*/React.createElement("div", {
       style: {
-        fontSize: 11,
+        fontSize: 12,
         color: C.t4,
         marginBottom: 12
       }
@@ -6268,7 +7291,7 @@ function AdminView({
     }
   }, "Audit Log"), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 11,
+      fontSize: 12,
       color: C.t4,
       marginBottom: 12
     }
@@ -6328,13 +7351,13 @@ function AdminView({
       width: "100%",
       borderCollapse: "collapse"
     }
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, ["Timestamp", "Employee", "Badge", "Type", "Device", "IP"].map(function (h) {
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, ["Timestamp", "Employee", "Badge", "Type", "Device", "IP", "Location"].map(function (h) {
     return /*#__PURE__*/React.createElement("th", {
       key: h,
       style: {
         padding: "8px 10px",
         textAlign: "left",
-        fontSize: 10,
+        fontSize: 12,
         fontWeight: 600,
         color: C.t4,
         borderBottom: "1px solid " + C.bd,
@@ -6384,7 +7407,7 @@ function AdminView({
       style: {
         padding: "6px 10px",
         fontFamily: Fm,
-        fontSize: 11,
+        fontSize: 12,
         color: C.t4
       }
     }, emp ? emp.badge : "?"), /*#__PURE__*/React.createElement("td", {
@@ -6407,10 +7430,17 @@ function AdminView({
         fontSize: 12,
         color: C.t4
       }
-    }, p.ip || "-"));
+    }, p.ip || "-"), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: "6px 10px",
+        fontFamily: Fm,
+        fontSize: 12,
+        color: p.lat ? C.green : C.t4
+      }
+    }, p.lat ? "◉ " + p.lat.toFixed(4) + "°, " + p.lng.toFixed(4) + "°" + (p.dist != null ? " (" + p.dist + "m)" : "") : "—"));
   })))), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 9,
+      fontSize: 12,
       color: C.t4,
       marginTop: 8
     }
@@ -6426,12 +7456,12 @@ function App() {
   var r2 = useState("kiosk"),
     view = r2[0],
     setView = r2[1];
-  var r3 = useState(false),
-    ma = r3[0],
-    setMa = r3[1];
-  var r4 = useState(false),
-    aa = r4[0],
-    setAa = r4[1];
+  var rStaff = useState(DEFAULT_STAFF),
+    staff = rStaff[0],
+    setStaff = rStaff[1];
+  var rLogged = useState(null),
+    loggedIn = rLogged[0],
+    setLoggedIn = rLogged[1];
   var r5 = useState([]),
     emps = r5[0],
     setEmps = r5[1];
@@ -6444,15 +7474,9 @@ function App() {
   var r8 = useState([]),
     requests = r8[0],
     setRequests = r8[1];
-  var r9 = useState([]),
-    ptoRequests = r9[0],
-    setPtoRequests = r9[1];
   var r10 = useState(DEFAULT_POLICY),
     policy = r10[0],
     setPolicy = r10[1];
-  var r11 = useState(DEFAULT_PTO_POLICY),
-    ptoPolicy = r11[0],
-    setPtoPolicy = r11[1];
   var r12 = useState(DEFAULT_GEO),
     geoConfig = r12[0],
     setGeoConfig = r12[1];
@@ -6460,39 +7484,89 @@ function App() {
   useEffect(function () {
     (async function () {
       try {
-        var store = await sGet("tk-v7-data");
-        var pch = await sGet("tk-v7-punches");
-        var reqs = await sGet("tk-v7-requests");
-        var pto = await sGet("tk-v7-pto");
-        var pol = await sGet("tk-v7-policy");
-        var ppol = await sGet("tk-v7-pto-policy");
-        var geo = await sGet("tk-v7-geo");
-        if (store && store.employees && store.employees.length > 0) {
-          /* migrate badges: strip STA- prefix */var migrated = store.employees.map(function (e) {
-            return Object.assign({}, e, {
-              badge: e.badge.replace(/^STA-/, "")
-            });
-          });
-          setEmps(withPts(migrated, store.pointEvents || [], pol || DEFAULT_POLICY));
-          setPEvents(store.pointEvents || []);
-          sSet("tk-v7-data", {
-            employees: migrated,
-            pointEvents: store.pointEvents || []
-          });
+        if (useSupa()) {
+          /* ── SUPABASE MODE ── */
+          var sbEmps = await sbLoadEmployees();
+          var sbPch = await sbLoadPunches();
+          var sbPe = await sbLoadPointEvents();
+          var sbReqs = await sbLoadRequests();
+          var sbStf = await sbLoadStaff();
+          var sbPol = await sbLoadConfig("policy");
+          var sbGeo = await sbLoadConfig("geo");
+          if (sbEmps && sbEmps.length > 0) {
+            setEmps(withPts(sbEmps, sbPe || [], sbPol || DEFAULT_POLICY));
+            setPEvents(sbPe || []);
+          } else {
+            setEmps(SEED.map(function (e) {
+              return Object.assign({}, e, {
+                pts: 0
+              });
+            }));
+            setPEvents([]);
+          }
+          setPunches(sbPch || []);
+          setRequests(sbReqs || []);
+          if (sbPol) setPolicy(sbPol);
+          if (sbGeo) setGeoConfig(sbGeo);
+          if (sbStf && sbStf.length > 0) setStaff(sbStf);
+          /* subscribe to realtime punch updates */
+          var sb = getSb();
+          if (sb) {
+            sb.channel("tk-punches").on("postgres_changes", {
+              event: "INSERT",
+              schema: "public",
+              table: "tk_punches"
+            }, function (payload) {
+              var p = payload.new;
+              setPunches(function (prev) {
+                return [{
+                  id: p.id,
+                  eid: p.eid,
+                  type: p.type,
+                  time: p.time,
+                  dev: p.dev,
+                  ip: p.ip,
+                  lat: p.lat ? parseFloat(p.lat) : null,
+                  lng: p.lng ? parseFloat(p.lng) : null,
+                  dist: p.dist
+                }].concat(prev);
+              });
+            }).subscribe();
+          }
         } else {
-          setEmps(SEED.map(function (e) {
-            return Object.assign({}, e, {
-              pts: 0
+          /* ── LOCALSTORAGE MODE ── */
+          var store = await sGet("tk-v7-data");
+          var pch = await sGet("tk-v7-punches");
+          var reqs = await sGet("tk-v7-requests");
+          var pol = await sGet("tk-v7-policy");
+          var geo = await sGet("tk-v7-geo");
+          var stf = await sGet("tk-v7-staff");
+          if (store && store.employees && store.employees.length > 0) {
+            var migrated = store.employees.map(function (e) {
+              return Object.assign({}, e, {
+                badge: e.badge.replace(/^STA-/, "")
+              });
             });
-          }));
-          setPEvents([]);
+            setEmps(withPts(migrated, store.pointEvents || [], pol || DEFAULT_POLICY));
+            setPEvents(store.pointEvents || []);
+            sSet("tk-v7-data", {
+              employees: migrated,
+              pointEvents: store.pointEvents || []
+            });
+          } else {
+            setEmps(SEED.map(function (e) {
+              return Object.assign({}, e, {
+                pts: 0
+              });
+            }));
+            setPEvents([]);
+          }
+          setPunches(pch || []);
+          setRequests(reqs || []);
+          if (pol) setPolicy(pol);
+          if (geo) setGeoConfig(geo);
+          if (stf && stf.length > 0) setStaff(stf);
         }
-        setPunches(pch || []);
-        setRequests(reqs || []);
-        setPtoRequests(pto || []);
-        if (pol) setPolicy(pol);
-        if (ppol) setPtoPolicy(ppol);
-        if (geo) setGeoConfig(geo);
       } catch (e) {
         console.error(e);
         setEmps(SEED.map(function (e) {
@@ -6513,96 +7587,74 @@ function App() {
       employees: ne,
       pointEvents: npe
     });
+    if (useSupa()) {
+      ne.forEach(function (e) {
+        sbSaveEmployee(e);
+      });
+    }
   }
-  function persistP(np) {
+  function persistP(np, newPunch) {
     if (!saveOk.current) return;
     sSet("tk-v7-punches", np);
+    if (useSupa() && newPunch) {
+      sbSavePunch(newPunch);
+    }
   }
-  function persistR(nr) {
+  function persistR(nr, changedReq) {
     if (!saveOk.current) return;
     sSet("tk-v7-requests", nr);
-  }
-  function persistPto(np) {
-    if (!saveOk.current) return;
-    sSet("tk-v7-pto", np);
+    if (useSupa() && changedReq) {
+      sbSaveRequest(changedReq);
+    }
   }
   function handlePunch(p) {
     var np = punches.concat([p]);
     setPunches(np);
-    persistP(np);
+    persistP(np, p);
   }
   function handleRequest(req) {
     var nr = requests.concat([req]);
     setRequests(nr);
-    persistR(nr);
+    persistR(nr, req);
   }
   function handleApproveRequest(id) {
     var req = requests.find(function (r) {
       return r.id === id;
     });
     if (req) {
-      handlePunch({
+      var ap = {
         id: "P-A-" + Date.now() + "-" + Math.random().toString(36).substr(2, 4),
         eid: req.eid,
         type: req.type,
         time: req.time,
         dev: "APPROVED",
         ip: req.ip || ""
-      });
+      };
+      handlePunch(ap);
     }
+    var updated = Object.assign({}, req, {
+      status: "approved"
+    });
     var nr = requests.map(function (r) {
-      return r.id === id ? Object.assign({}, r, {
-        status: "approved"
-      }) : r;
+      return r.id === id ? updated : r;
     });
     setRequests(nr);
-    persistR(nr);
+    persistR(nr, updated);
   }
   function handleDenyRequest(id) {
-    var nr = requests.map(function (r) {
-      return r.id === id ? Object.assign({}, r, {
-        status: "denied"
-      }) : r;
-    });
-    setRequests(nr);
-    persistR(nr);
-  }
-  function handleApprovePto(id) {
-    var req = ptoRequests.find(function (r) {
+    var req = requests.find(function (r) {
       return r.id === id;
     });
-    if (req) {
-      var ne = emps.map(function (e) {
-        if (e.id === req.eid && e.ptoBalances) {
-          var nb = Object.assign({}, e.ptoBalances);
-          if (nb[req.ptoType] !== undefined) nb[req.ptoType] = Math.max(0, nb[req.ptoType] - req.hours);
-          return Object.assign({}, e, {
-            ptoBalances: nb
-          });
-        }
-        return e;
-      });
-      setEmps(ne);
-      persist(ne, pEvents);
-    }
-    var nr = ptoRequests.map(function (r) {
-      return r.id === id ? Object.assign({}, r, {
-        status: "approved"
-      }) : r;
+    var updated = Object.assign({}, req, {
+      status: "denied"
     });
-    setPtoRequests(nr);
-    persistPto(nr);
-  }
-  function handleDenyPto(id) {
-    var nr = ptoRequests.map(function (r) {
-      return r.id === id ? Object.assign({}, r, {
-        status: "denied"
-      }) : r;
+    var nr = requests.map(function (r) {
+      return r.id === id ? updated : r;
     });
-    setPtoRequests(nr);
-    persistPto(nr);
+    setRequests(nr);
+    persistR(nr, updated);
   }
-  function handleIssuePoint(eid, type, pts) {
+  function handleIssuePoint(eid, type, pts, violationDate) {
     var rule = RULES.find(function (r) {
       return r.k === type;
     });
@@ -6612,13 +7664,16 @@ function App() {
       eid: eid,
       type: type,
       pts: actualPts,
-      date: new Date().toISOString()
+      date: violationDate || new Date().toISOString()
     };
     var npe = pEvents.concat([ev]);
     setPEvents(npe);
     var ne = withPts(emps, npe, policy);
     setEmps(ne);
     persist(ne, npe);
+    if (useSupa()) {
+      sbSavePointEvent(ev);
+    }
   }
   function handleUpdateEmps(ne) {
     var updated = withPts(ne, pEvents, policy);
@@ -6628,14 +7683,23 @@ function App() {
   function handleUpdatePolicy(np) {
     setPolicy(np);
     sSet("tk-v7-policy", np);
-  }
-  function handleUpdatePtoPolicy(np) {
-    setPtoPolicy(np);
-    sSet("tk-v7-pto-policy", np);
+    if (useSupa()) {
+      sbSaveConfig("policy", np);
+    }
   }
   function handleUpdateGeo(ng) {
     setGeoConfig(ng);
     sSet("tk-v7-geo", ng);
+    if (useSupa()) {
+      sbSaveConfig("geo", ng);
+    }
+  }
+  function handleUpdateStaff(ns) {
+    setStaff(ns);
+    sSet("tk-v7-staff", ns);
+    if (useSupa()) {
+      sbSaveStaff(ns);
+    }
   }
   function handleClearData() {
     var fresh = SEED.map(function (e) {
@@ -6647,73 +7711,44 @@ function App() {
     setPunches([]);
     setPEvents([]);
     setRequests([]);
-    setPtoRequests([]);
     setPolicy(DEFAULT_POLICY);
-    setPtoPolicy(DEFAULT_PTO_POLICY);
     setGeoConfig(DEFAULT_GEO);
+    setStaff(DEFAULT_STAFF);
     sSet("tk-v7-data", {
       employees: SEED,
       pointEvents: []
     });
     sSet("tk-v7-punches", []);
     sSet("tk-v7-requests", []);
-    sSet("tk-v7-pto", []);
     sSet("tk-v7-policy", DEFAULT_POLICY);
-    sSet("tk-v7-pto-policy", DEFAULT_PTO_POLICY);
     sSet("tk-v7-geo", DEFAULT_GEO);
+    sSet("tk-v7-staff", DEFAULT_STAFF);
   }
-  function sw(v) {
-    if (v === "manager") setMa(false);
-    if (v === "admin") setAa(false);
-    setView(v);
+  function handleStaffLogin(s) {
+    setLoggedIn(s);
+    if (s.role === "admin") setView("admin");else setView("manager");
+  }
+  function handleLogout() {
+    setLoggedIn(null);
+    setView("kiosk");
   }
   if (loading) return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("style", null, "@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');*{box-sizing:border-box;margin:0;padding:0}body{background:" + C.bg + ";overflow-x:hidden}button{cursor:pointer;border:none;outline:none;font-family:" + Fb + ";-webkit-tap-highlight-color:transparent}button:active{transform:scale(0.97)}input,select,textarea{font-family:" + Fb + "}@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(250,204,21,0.15)}50%{box-shadow:0 0 40px rgba(250,204,21,0.25)}}@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}@keyframes spin{to{transform:rotate(360deg)}}"), /*#__PURE__*/React.createElement(LoadScreen, null));
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("style", null, "@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');*{box-sizing:border-box;margin:0;padding:0}body{background:" + C.bg + ";overflow-x:hidden}button{cursor:pointer;border:none;outline:none;font-family:" + Fb + ";-webkit-tap-highlight-color:transparent}button:active{transform:scale(0.97)}input,select,textarea{font-family:" + Fb + "}@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(250,204,21,0.15)}50%{box-shadow:0 0 40px rgba(250,204,21,0.25)}}@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}@keyframes spin{to{transform:rotate(360deg)}}"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      position: "fixed",
-      top: mo ? "auto" : 10,
-      bottom: mo ? 10 : "auto",
-      left: mo ? "50%" : "auto",
-      right: mo ? "auto" : 10,
-      transform: mo ? "translateX(-50%)" : "none",
-      zIndex: 999,
-      display: "flex",
-      gap: 3,
-      background: C.sf + "F0",
-      backdropFilter: "blur(10px)",
-      border: "1px solid " + C.bd,
-      borderRadius: 10,
-      padding: 3,
-      boxShadow: "0 4px 24px rgba(0,0,0,0.5)"
-    }
-  }, ["kiosk", "manager", "admin"].map(function (v) {
-    return /*#__PURE__*/React.createElement("button", {
-      key: v,
-      onClick: function () {
-        sw(v);
-      },
-      style: {
-        padding: mo ? "8px 18px" : "7px 16px",
-        borderRadius: 8,
-        fontSize: mo ? 11 : 10,
-        fontWeight: 700,
-        letterSpacing: 1.5,
-        textTransform: "uppercase",
-        color: view === v ? C.bg : C.t3,
-        background: view === v ? C.spark : "transparent"
-      }
-    }, v.charAt(0).toUpperCase() + v.slice(1));
-  })), view === "kiosk" && /*#__PURE__*/React.createElement(KioskView, {
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("style", null, "@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');*{box-sizing:border-box;margin:0;padding:0}body{background:" + C.bg + ";overflow-x:hidden}button{cursor:pointer;border:none;outline:none;font-family:" + Fb + ";-webkit-tap-highlight-color:transparent}button:active{transform:scale(0.97)}input,select,textarea{font-family:" + Fb + "}@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(250,204,21,0.15)}50%{box-shadow:0 0 40px rgba(250,204,21,0.25)}}@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}@keyframes spin{to{transform:rotate(360deg)}}"), view === "kiosk" && /*#__PURE__*/React.createElement(KioskView, {
     emps: emps,
     punches: punches,
     onPunch: handlePunch,
-    onRequest: handleRequest
-  }), view === "manager" && !ma && /*#__PURE__*/React.createElement(AccessGate, {
-    role: "manager",
-    onAccess: function () {
-      setMa(true);
+    onRequest: handleRequest,
+    geoConfig: geoConfig,
+    onStaffLogin: function () {
+      setView("staff-login");
     }
-  }), view === "manager" && ma && /*#__PURE__*/React.createElement(ManagerView, {
+  }), view === "staff-login" && /*#__PURE__*/React.createElement(StaffLogin, {
+    staff: staff,
+    onLogin: handleStaffLogin,
+    onCancel: function () {
+      setView("kiosk");
+    }
+  }), view === "manager" && loggedIn && /*#__PURE__*/React.createElement(ManagerView, {
     emps: emps,
     punches: punches,
     pointEvents: pEvents,
@@ -6722,19 +7757,10 @@ function App() {
     requests: requests,
     onApproveRequest: handleApproveRequest,
     onDenyRequest: handleDenyRequest,
-    ptoRequests: ptoRequests,
-    onApprovePto: handleApprovePto,
-    onDenyPto: handleDenyPto,
     policy: policy,
-    onLogout: function () {
-      setMa(false);
-    }
-  }), view === "admin" && !aa && /*#__PURE__*/React.createElement(AccessGate, {
-    role: "admin",
-    onAccess: function () {
-      setAa(true);
-    }
-  }), view === "admin" && aa && /*#__PURE__*/React.createElement(AdminView, {
+    onLogout: handleLogout,
+    staffName: loggedIn.fn + " " + loggedIn.ln
+  }), view === "admin" && loggedIn && /*#__PURE__*/React.createElement(AdminView, {
     emps: emps,
     punches: punches,
     pointEvents: pEvents,
@@ -6743,15 +7769,13 @@ function App() {
     onClearData: handleClearData,
     policy: policy,
     onUpdatePolicy: handleUpdatePolicy,
-    ptoPolicy: ptoPolicy,
-    onUpdatePtoPolicy: handleUpdatePtoPolicy,
     geoConfig: geoConfig,
     onUpdateGeo: handleUpdateGeo,
-    ptoRequests: ptoRequests,
     requests: requests,
-    onLogout: function () {
-      setAa(false);
-    }
+    onLogout: handleLogout,
+    staffName: loggedIn.fn + " " + loggedIn.ln,
+    staff: staff,
+    onUpdateStaff: handleUpdateStaff
   }));
 }
 ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
