@@ -366,7 +366,7 @@ const DEFAULT_GEO = {
   enforceIP: false,
   siteLat: 42.2526,
   siteLng: -83.2119,
-  geoRadius: 500,
+  geoRadius: 500, geoMaxAccuracy: 150,
   enforceGeo: false,
   siteAddress: "DFM Marshall Plant, Marshall, MI"
 };
@@ -448,7 +448,11 @@ async function sbLoadPunches() {
       ip: p.ip,
       lat: p.lat ? parseFloat(p.lat) : null,
       lng: p.lng ? parseFloat(p.lng) : null,
-      dist: p.dist
+      dist: p.dist,
+      accuracy: p.accuracy ? parseFloat(p.accuracy) : null,
+      altitude: p.altitude ? parseFloat(p.altitude) : null,
+      speed: p.speed ? parseFloat(p.speed) : null,
+      flags: p.geo_flags || null
     };
   });
 }
@@ -522,7 +526,11 @@ async function sbSavePunch(p) {
     ip: p.ip,
     lat: p.lat,
     lng: p.lng,
-    dist: p.dist
+    dist: p.dist,
+    accuracy: p.accuracy || null,
+    altitude: p.altitude || null,
+    speed: p.speed || null,
+    geo_flags: p.flags || null
   });
 }
 async function sbSavePointEvent(ev) {
@@ -614,7 +622,7 @@ function haversine(lat1, lon1, lat2, lon2) {
   var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * p) * Math.cos(lat2 * p) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
-function checkGeoLocation(gc) {
+function checkGeoLocation(gc, lastPunches, eid) {
   return new Promise(function (resolve) {
     if (!gc || !gc.enforceGeo) {
       resolve({
@@ -626,25 +634,107 @@ function checkGeoLocation(gc) {
     if (!navigator.geolocation) {
       resolve({
         ok: false,
-        reason: "Geolocation not supported by this device"
+        reason: "Geolocation not supported by this device. Use the on-site kiosk."
       });
       return;
     }
+    /* Layer 1: Get fresh GPS position — zero cache tolerance */
     navigator.geolocation.getCurrentPosition(function (pos) {
-      var dist = haversine(pos.coords.latitude, pos.coords.longitude, gc.siteLat, gc.siteLng);
+      var lat = pos.coords.latitude;
+      var lng = pos.coords.longitude;
+      var accuracy = pos.coords.accuracy || 9999;
+      var altitude = pos.coords.altitude;
+      var speed = pos.coords.speed;
+      var dist = haversine(lat, lng, gc.siteLat, gc.siteLng);
       var withinRadius = dist <= gc.geoRadius;
+      var flags = [];
+
+      /* Layer 2: Accuracy gate — reject low-quality readings */
+      var maxAccuracy = gc.geoMaxAccuracy || 150;
+      if (accuracy > maxAccuracy) {
+        resolve({
+          ok: false,
+          reason: "GPS signal too weak (accuracy: " + Math.round(accuracy) + "m). Move outdoors or closer to a window and try again.",
+          dist: Math.round(dist),
+          lat: lat,
+          lng: lng,
+          accuracy: accuracy
+        });
+        return;
+      }
+
+      /* Layer 3: Velocity/teleportation check — compare to last punch */
+      if (lastPunches && eid) {
+        var recentPunches = (lastPunches || []).filter(function(p) {
+          return p.eid === eid && p.lat && p.lat !== 0;
+        }).sort(function(a,b) { return new Date(b.time) - new Date(a.time); });
+        if (recentPunches.length > 0) {
+          var lastP = recentPunches[0];
+          var timeDiffSec = (Date.now() - new Date(lastP.time).getTime()) / 1000;
+          if (timeDiffSec > 0 && timeDiffSec < 3600) {
+            var distFromLast = haversine(lat, lng, lastP.lat, lastP.lng);
+            var speedMps = distFromLast / timeDiffSec;
+            var speedKmh = speedMps * 3.6;
+            if (speedKmh > 200 && timeDiffSec < 600) {
+              flags.push("TELEPORT");
+              resolve({
+                ok: false,
+                reason: "Location verification failed. Your position changed " + Math.round(distFromLast/1000) + "km in " + Math.round(timeDiffSec/60) + " min. Contact your supervisor.",
+                dist: Math.round(dist),
+                lat: lat,
+                lng: lng,
+                accuracy: accuracy,
+                flags: flags
+              });
+              return;
+            }
+            if (speedKmh > 120) flags.push("FAST_MOVE");
+          }
+        }
+      }
+
+      /* Layer 4: Coordinate precision check — spoofers often return exact round numbers */
+      var latStr = String(lat);
+      var lngStr = String(lng);
+      var latDecimals = latStr.indexOf(".") >= 0 ? latStr.split(".")[1].length : 0;
+      var lngDecimals = lngStr.indexOf(".") >= 0 ? lngStr.split(".")[1].length : 0;
+      if (latDecimals <= 2 || lngDecimals <= 2) {
+        flags.push("LOW_PRECISION");
+      }
+
+      /* Layer 5: Repeated exact coordinate check */
+      if (lastPunches && eid) {
+        var exactMatch = (lastPunches || []).filter(function(p) {
+          return p.eid === eid && p.lat === lat && p.lng === lng && p.lat !== null;
+        });
+        if (exactMatch.length >= 3) {
+          flags.push("REPEAT_COORDS");
+        }
+      }
+
+      /* Layer 6: Accuracy vs distance sanity check */
+      if (accuracy > dist && dist < gc.geoRadius) {
+        flags.push("ACCURACY_EXCEEDS_DIST");
+      }
+
+      if (accuracy < 30) flags.push("HIGH_ACCURACY");
+
       resolve({
         ok: withinRadius,
         dist: Math.round(dist),
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude,
+        lat: lat,
+        lng: lng,
+        accuracy: Math.round(accuracy),
+        altitude: altitude ? Math.round(altitude) : null,
+        speed: speed ? parseFloat(speed.toFixed(1)) : null,
+        flags: flags,
         reason: withinRadius ? "" : "You are " + Math.round(dist) + "m from the site (max " + gc.geoRadius + "m)"
       });
     }, function (err) {
       var reasons = {
-        "1": "Location permission denied. Enable location access and try again.",
-        "2": "Unable to determine your location. Check GPS/network.",
-        "3": "Location request timed out. Try again."
+        "1": "Location permission denied. You must allow location access to punch in remotely.",
+        "2": "Unable to determine your location. Check that GPS is enabled on your device.",
+        "3": "Location request timed out. Move to an area with better GPS signal and try again."
       };
       resolve({
         ok: false,
@@ -652,8 +742,8 @@ function checkGeoLocation(gc) {
       });
     }, {
       enableHighAccuracy: true,
-      timeout: 10000,
-      maximumAge: 60000
+      timeout: 15000,
+      maximumAge: 0
     });
   });
 }
@@ -2065,13 +2155,17 @@ function KioskView({
       setTimeout(reset, 8000);
       return;
     }
-    checkGeoLocation(gc).then(function (geoResult) {
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent||"");
+    var deviceName = isMobile ? "MOBILE" : "KIOSK-MARSHALL-01";
+    checkGeoLocation(gc, punches, emp.id).then(function (geoResult) {
       setGeoChecking(false);
       if (!geoResult.ok) {
         setGeoError(geoResult.reason);
         setGeoData({
           type: "geo",
-          dist: geoResult.dist
+          dist: geoResult.dist,
+          accuracy: geoResult.accuracy,
+          flags: geoResult.flags
         });
         setState("geo-denied");
         setTimeout(reset, 8000);
@@ -2082,11 +2176,15 @@ function KioskView({
         eid: emp.id,
         type: type,
         time: new Date().toISOString(),
-        dev: "KIOSK-MARSHALL-01",
+        dev: deviceName,
         ip: getIP(),
         lat: geoResult.lat || null,
         lng: geoResult.lng || null,
-        dist: geoResult.dist || 0
+        dist: geoResult.dist || 0,
+        accuracy: geoResult.accuracy || null,
+        altitude: geoResult.altitude || null,
+        speed: geoResult.speed || null,
+        flags: (geoResult.flags||[]).join(",") || null
       };
       onPunch(p);
       setPunchType(type);
@@ -5333,14 +5431,14 @@ function AdminView({
       a2.click();
     }
     if (type === "audit") {
-      var rows3 = ["Employee,Badge,Type,Time,Device,IP,Lat,Lng,Distance"];
+      var rows3 = ["Employee,Badge,Type,Time,Device,IP,Lat,Lng,Distance,Accuracy,Altitude,Speed,Flags"];
       punches.slice().sort(function (a, b) {
         return new Date(b.time) - new Date(a.time);
       }).forEach(function (p) {
         var emp = emps.find(function (e) {
           return e.id === p.eid;
         });
-        rows3.push((emp ? emp.fn + " " + emp.ln : "?") + "," + (emp ? emp.badge : "?") + "," + p.type + "," + new Date(p.time).toLocaleString() + "," + (p.dev || "") + "," + (p.ip || "") + "," + (p.lat || "") + "," + (p.lng || "") + "," + (p.dist != null ? p.dist : ""));
+        rows3.push((emp ? emp.fn + " " + emp.ln : "?") + "," + (emp ? emp.badge : "?") + "," + p.type + "," + new Date(p.time).toLocaleString() + "," + (p.dev || "") + "," + (p.ip || "") + "," + (p.lat || "") + "," + (p.lng || "") + "," + (p.dist != null ? p.dist : "") + "," + (p.accuracy || "") + "," + (p.altitude || "") + "," + (p.speed || "") + "," + (p.flags || ""));
       });
       var blob3 = new Blob([rows3.join("\n")], {
         type: "text/csv"
