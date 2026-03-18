@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Spark TimeKeep</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23FACC15'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -201,6 +204,7 @@ const SEED = [{
   shiftEnd: "14:30",
   workDays: [1, 2, 3, 4, 5],
   rate: 16.50,
+  salary: 0,
   st: "active"
 }, {
   id: "E002",
@@ -216,6 +220,7 @@ const SEED = [{
   shiftEnd: "14:30",
   workDays: [1, 2, 3, 4, 5],
   rate: 17.00,
+  salary: 0,
   st: "active"
 }, {
   id: "E003",
@@ -231,6 +236,7 @@ const SEED = [{
   shiftEnd: "14:30",
   workDays: [1, 2, 3, 4, 5],
   rate: 16.50,
+  salary: 0,
   st: "active"
 }, {
   id: "E004",
@@ -246,6 +252,7 @@ const SEED = [{
   shiftEnd: "15:30",
   workDays: [1, 2, 3, 4, 5],
   rate: 16.00,
+  salary: 0,
   st: "active"
 }, {
   id: "E005",
@@ -261,6 +268,7 @@ const SEED = [{
   shiftEnd: "14:00",
   workDays: [1, 2, 3, 4, 5],
   rate: 19.50,
+  salary: 0,
   st: "active"
 }, {
   id: "E006",
@@ -276,6 +284,7 @@ const SEED = [{
   shiftEnd: "14:30",
   workDays: [1, 2, 3, 4, 5],
   rate: 17.00,
+  salary: 0,
   st: "active"
 }, {
   id: "E007",
@@ -291,6 +300,7 @@ const SEED = [{
   shiftEnd: "15:30",
   workDays: [1, 2, 3, 4, 5],
   rate: 16.00,
+  salary: 0,
   st: "terminated"
 }, {
   id: "E008",
@@ -306,6 +316,7 @@ const SEED = [{
   shiftEnd: "14:30",
   workDays: [1, 2, 3, 4, 5],
   rate: 16.50,
+  salary: 0,
   st: "active"
 }, {
   id: "E009",
@@ -321,6 +332,7 @@ const SEED = [{
   shiftEnd: "15:30",
   workDays: [1, 2, 3, 4, 5],
   rate: 16.00,
+  salary: 0,
   st: "active"
 }, {
   id: "E010",
@@ -336,6 +348,7 @@ const SEED = [{
   shiftEnd: "14:30",
   workDays: [1, 2, 3, 4, 5],
   rate: 16.50,
+  salary: 0,
   st: "active"
 }];
 const DEFAULT_POLICY = {
@@ -360,7 +373,7 @@ const DEFAULT_GEO = {
 
 /* ═══ SUPABASE CONFIG — Set your project credentials here ═══ */
 var SUPABASE_URL = "https://rdyzvohphrmkkowdsoam.supabase.co";
-var SUPABASE_KEY = "sb_publishable_F1SY19w16Y4Frjd3C9RSGQ_6v4DmiO5";
+var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJkeXp2b2hwaHJta2tvd2Rzb2FtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NTk0MjIsImV4cCI6MjA4OTMzNTQyMn0.7KxbdsTpQcOZDmrP125lga7sfdphpyTbG4jbDtHKE_E";
 var _sb = null;
 function getSb() {
   if (_sb) return _sb;
@@ -413,7 +426,8 @@ async function sbLoadEmployees() {
       shiftEnd: e.shift_end,
       workDays: e.work_days,
       rate: parseFloat(e.rate),
-      st: e.status
+      st: e.status,
+      salary: parseFloat(e.salary) || 0
     };
   });
 }
@@ -539,7 +553,8 @@ async function sbSaveEmployee(e) {
     shift_end: e.shiftEnd,
     work_days: e.workDays,
     rate: e.rate,
-    status: e.st
+    status: e.st,
+    salary: e.salary || 0
   });
 }
 async function sbSaveRequest(r) {
@@ -2806,18 +2821,16 @@ function KioskView({
   }, "\xA9 2026 Spark Companies \xB7 DFM Solutions"), onStaffLogin && /*#__PURE__*/React.createElement("button", {
     onClick: onStaffLogin,
     style: {
-      padding: "8px 18px",
-      borderRadius: 8,
-      background: C.spark + "15",
-      border: "1px solid " + C.spark + "44",
-      fontSize: 13,
-      color: C.spark,
-      fontWeight: 700,
-      display: "flex",
-      alignItems: "center",
-      gap: 6
+      padding: "6px 8px",
+      borderRadius: 6,
+      background: "transparent",
+      border: "none",
+      fontSize: 14,
+      color: C.t4,
+      fontWeight: 400,
+      opacity: 0.3
     }
-  }, "\u2699 Staff Login")));
+  }, "\u2699")));
 }
 
 /* ═══ MANAGER VIEW ═══ */
@@ -5107,7 +5120,8 @@ function AdminView({
       shiftStart: "06:00",
       shiftEnd: "14:30",
       workDays: [1, 2, 3, 4, 5],
-      rate: 16.50
+      rate: 16.50,
+      salary: 0
     }),
     form = r3[0],
     setForm = r3[1];
@@ -5226,6 +5240,7 @@ function AdminView({
       shiftEnd: form.shiftEnd,
       workDays: form.workDays,
       rate: parseFloat(form.rate) || 16.50,
+      salary: parseFloat(form.salary) || 0,
       st: "active",
       pts: 0
     };
@@ -5239,7 +5254,8 @@ function AdminView({
       shiftStart: "06:00",
       shiftEnd: "14:30",
       workDays: [1, 2, 3, 4, 5],
-      rate: 16.50
+      rate: 16.50,
+      salary: 0
     });
     setShowAdd(false);
   }
@@ -5746,6 +5762,51 @@ function AdminView({
       });
     },
     style: inp
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    style: {
+      fontSize: 12,
+      fontWeight: 600,
+      color: C.t4,
+      fontFamily: Fb,
+      letterSpacing: 1.5,
+      display: "block",
+      marginBottom: 3
+    }
+  }, "RATE/HR"), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    step: "0.50",
+    value: form.rate,
+    onChange: function (e) {
+      setForm(function (f) {
+        return Object.assign({}, f, {
+          rate: e.target.value
+        });
+      });
+    },
+    style: inp
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    style: {
+      fontSize: 12,
+      fontWeight: 600,
+      color: C.t4,
+      fontFamily: Fb,
+      letterSpacing: 1.5,
+      display: "block",
+      marginBottom: 3
+    }
+  }, "SALARY/YR"), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    step: "1000",
+    value: form.salary || "",
+    onChange: function (e) {
+      setForm(function (f) {
+        return Object.assign({}, f, {
+          salary: e.target.value
+        });
+      });
+    },
+    placeholder: "0 = hourly",
+    style: inp
   })), /*#__PURE__*/React.createElement("button", {
     onClick: addEmp,
     disabled: !form.fn || !form.ln,
@@ -5913,7 +5974,7 @@ function AdminView({
       width: "100%",
       borderCollapse: "collapse"
     }
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, ["Badge", "Name", "PIN", "Dept", "Shift", "Rate", "Points", "Status", ""].map(function (h) {
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, ["Badge", "Name", "PIN", "Dept", "Shift", "Rate", "Salary", "Points", "Status", ""].map(function (h) {
     return /*#__PURE__*/React.createElement("th", {
       key: h,
       style: {
@@ -5999,6 +6060,13 @@ function AdminView({
         color: C.spark
       }
     }, "$", e.rate || 16, "/hr"), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: "8px 12px",
+        fontFamily: Fm,
+        fontSize: 11,
+        color: e.salary > 0 ? C.green : C.t4
+      }
+    }, e.salary > 0 ? "$" + Number(e.salary).toLocaleString() + "/yr" : "Hourly"), /*#__PURE__*/React.createElement("td", {
       style: {
         padding: "8px 12px"
       }
